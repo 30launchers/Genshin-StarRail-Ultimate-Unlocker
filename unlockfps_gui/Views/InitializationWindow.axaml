@@ -1,0 +1,103 @@
+<Window
+    x:Class="UnlockFps.Gui.Views.InitializationWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:UnlockFps.Gui.ViewModels"
+	xmlns:converters="clr-namespace:UnlockFps.Gui.Converters"
+    Title="Initialization"
+    Width="475" Loaded="Control_OnLoaded"
+    CanResize="False"
+    x:DataType="viewModels:InitializationWindowViewModel"
+    Icon="/Assets/icon.ico"
+    SizeToContent="Height"
+    Unloaded="Control_OnUnloaded"
+    mc:Ignorable="d">
+
+	<Window.Resources>
+		<!-- 定义资源 -->
+		<converters:HasItemsConverter x:Key="HasItemsConverter" />
+	</Window.Resources>
+	
+	<StackPanel Margin="12">
+		<Label>
+			<TextBlock TextWrapping="Wrap">
+				<Run Foreground="Gold" Text="Current GenshinImpact Path:"></Run>
+				<Run Text="{Binding Config.LaunchOptions.GamePath,FallbackValue=undefined}"></Run>
+				<LineBreak/>
+				<Run Foreground="DodgerBlue" Text="Current StarRail Path:"></Run>
+				<Run Text="{Binding Config.LaunchOptions.SRGamePath,FallbackValue=undefined}"></Run>
+			</TextBlock>
+		</Label>
+		<Label Content="" />
+		<Label
+            Content="Searching..."
+            IsVisible="{Binding IsSearching}"
+            Foreground="{DynamicResource SystemFillColorCaution}" />
+		<Label
+            Classes.green="{Binding InstallationPaths.Count,Converter={StaticResource HasItemsConverter}}"
+            IsVisible="{Binding IsSearching,Converter={x:Static BoolConverters.Not}}">
+			<TextBlock>
+				<Run Text="Found"></Run>
+				<Run Text="{Binding InstallationPaths.Count,Mode=OneWay}"></Run>
+				<Run Text="installation(s) of the game."></Run>
+			</TextBlock>
+			<Label.Styles>
+				<Style Selector="Label">
+					<Setter Property="Foreground" Value="{DynamicResource SystemFillColorCritical}"></Setter>
+				</Style>
+				<Style Selector="Label.green">
+					<Setter Property="Foreground" Value="{DynamicResource SystemFillColorSuccess}"></Setter>
+				</Style>
+			</Label.Styles>
+		</Label>
+		<Label Content="Select" />
+		<ComboBox
+            Width="NaN" SelectedItem="{Binding SelectedInstallationPath}"
+            Margin="3" ItemsSource="{Binding InstallationPaths}"
+            HorizontalAlignment="Stretch" />
+		<Label Margin="0,5">
+			<TextBlock>
+				<Run>If your game is not listed above, you can either:</Run>
+				<LineBreak />
+				<Run>1. Open the game now and the unlocker will try to find its location</Run>
+				<LineBreak />
+				<Run>2. Use the browse button below</Run>
+
+				<LineBreak />
+				<Run>3.None </Run>
+
+			</TextBlock>
+		</Label>
+		<!--DockPanel Margin="3">
+			<Panel DockPanel.Dock="Bottom">
+				<Button Content="Browse..." Click="BtnBrowse_OnClick" />
+				<Button HorizontalAlignment="Right" Content="Confirm" Click="BtnConfirm_OnClick" />
+			</Panel>
+		</DockPanel-->
+		<DockPanel Margin="3">
+
+			<!-- 底部按钮区域 -->
+			<DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
+				<!-- 
+            使用 StackPanel 将两个 Browse 按钮水平排列在一起。
+            Orientation="Horizontal" 表示子元素将水平排列。
+        -->
+				<StackPanel Orientation="Horizontal">
+					<Button Content="BrowseGenshin..." Click="BtnBrowse_OnClick" Margin="0,0,7,0"/>
+					<Button Content="BrowseSRail..." Click="BtnBrowseSR_OnClick"/>
+				</StackPanel>
+
+				<!-- 
+            Confirm 按钮会自动停靠在 DockPanel 的剩余空间（右边），
+            因为 StackPanel 已经占据了左边。
+            DockPanel.Dock="Right" 明确指定它停靠在右边。
+        -->
+				<Button Content="Confirm"
+						Click="BtnConfirm_OnClick"
+						DockPanel.Dock="Right"/>
+			</DockPanel>
+		</DockPanel>
+	</StackPanel>
+</Window>

@@ -1,0 +1,47 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="UnlockFps.Gui.LoadingGame"
+		xmlns:xxx1="clr-namespace:UnlockFps.Gui"
+		Icon="/Assets/icon.ico"
+		Width="320" Height="300" WindowStartupLocation="CenterOwner"
+		CanResize="False"
+		xmlns:vm="using:UnlockFps.Gui.ViewModels"
+		x:DataType="vm:MainWindowViewModel"
+        Title="LoadingGame">
+	
+	<!--Border>
+		<xxx1:LoadingProgress/>
+	</Border-->
+
+	<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<!-- 上方可拉伸区域（LoadingProgress 居中在此区域） -->
+			<RowDefinition Height="Auto" />
+			<!-- Separator 高度自适应 -->
+			<RowDefinition Height="Auto" />
+			<!-- ToggleSwitch -->
+		</Grid.RowDefinitions>
+
+		<StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+			<xxx1:LoadingProgress Margin="0,0,0,15"/>
+			<TextBlock x:Name="LoadingTextBlock" Text="loading" HorizontalAlignment="Center" FontSize="15"/>
+		</StackPanel>
+
+		<Separator Grid.Row="1" Margin="0"/>
+
+		<ToggleSwitch
+			Grid.Row="2"
+			x:Name="Game_Selected_Item_Manual_Mode"
+			VerticalAlignment="Center"
+		    Margin="15,0,0,5"
+			VerticalContentAlignment="Center"
+			
+			OffContent="test switch off"
+			ToolTip.Tip="test switch"
+			OnContent="test switch on" />
+	</Grid>
+</Window>

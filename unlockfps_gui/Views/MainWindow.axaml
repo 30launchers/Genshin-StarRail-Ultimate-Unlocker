@@ -1,0 +1,94 @@
+<Window
+    x:Class="UnlockFps.Gui.Views.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:UnlockFps.Gui.ViewModels"
+    Title="Genshin SR FPS Unlocker"
+    Width="320"
+    x:DataType="vm:MainWindowViewModel"
+    CanResize="False"
+    Closed="Window_OnClosed"
+    Closing="Window_OnClosing"
+    Icon="/Assets/icon.ico"
+    Loaded="Window_OnLoaded"
+    SizeToContent="Height"
+    TransparencyLevelHint="Mica"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*">
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_Options">
+                    <MenuItem Command="{Binding OpenSettingsWindowCommand}" Header="_Settings" />
+                    <MenuItem Command="{Binding OpenInitializationWindowCommand}" Header="_Initialization" />
+
+					<MenuItem  Header="_Manual Mode" Click="MenuItem_Manual_Mode_Click"/>
+
+					<MenuItem Header="_Unlimited FPS">
+						<!-- 为 MenuItem 命名并订阅 Click 事件 -->
+						<MenuItem x:Name="UnlimitedFpsMenuItemGenshin" Header="_Genshin Impact (Off)" Click="GenshinUnlimitedFpsMenuItem_Click"/>
+						<MenuItem x:Name="UnlimitedFpsMenuItemStarRail" Header="_Star Rail (Off)" Click="StarRailUnlimitedFpsMenuItem_Click"/>
+					</MenuItem>
+
+
+
+					<Separator />
+					<!-->MenuItem Command="{Binding OpenAboutWindowCommand}" Header="_About" /-->
+					<MenuItem  Header="_About" Click="MenuItem_About_Click"/>
+                </MenuItem>
+            </Menu>
+			
+		    <Separator Margin="0,0,0,6"/>
+			
+        </DockPanel>
+        <StackPanel Grid.Row="1" Margin="15,10">
+            <Grid ColumnDefinitions="Auto,*">
+                <TextBlock VerticalAlignment="Center" Text="FPS: " />
+				<NumericUpDown
+					x:Name="slider_fps_input"
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    FormatString="0"
+                    Increment="1"
+                    Maximum="{Binding MaximumFps}"
+                    Minimum="{Binding MinimumFps}"
+                    Text="FPS"
+					ValueChanged="NumericUpDown_ValueChanged"
+					LostFocus="NumericUpDown_LostFocus"
+                    Value="{Binding Config.FpsTargetTemp,Mode=OneWay}" />
+            </Grid>
+            <Slider
+				x:Name="slider_fps"
+                Maximum="720"
+                Minimum="0"
+				ValueChanged="Slider_fps_ValueChanged"
+                Value="{Binding Config.FpsTargetTemp, Mode=TwoWay}" />
+
+            <Grid ColumnDefinitions="*,Auto">
+                <ToggleSwitch
+					x:Name="Game_Selected_Item"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    IsChecked="{Binding Config.GameSelection}"
+                    OffContent="Genshin Impact Selected"
+					IsCheckedChanged="ApplyCustomAccentGame"
+					Checked="Game_Selected_Item_Checked"
+					Unchecked="Game_Selected_Item_Unchecked"
+                    OnContent="Star Rail Selected" />
+                <Button
+                    Grid.Column="1"
+                    IsEnabled="{Binding GameInstanceService.IsRunning,Converter={x:Static BoolConverters.Not}}"
+                    Click="BtnLaunchGame_OnClick"
+                    Content="Launch" />
+            </Grid>
+        </StackPanel>
+    </Grid>
+
+</Window>

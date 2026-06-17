@@ -1,0 +1,61 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="UnlockFps.Gui.LoadingProgress">
+	<Grid>
+		<Grid.Styles>
+			<Style Selector="Arc#Arc2">
+				<Style.Animations>
+					<!--Animation IterationCount="Infinite" Duration="0:0:1">
+                        <KeyFrame Cue="0%">
+                            <Setter Property="RotateTransform.Angle" Value="0" />
+                        </KeyFrame>
+                        <KeyFrame Cue="50%">
+                            <Setter Property="RotateTransform.Angle" Value="180" />
+                        </KeyFrame>
+                        <KeyFrame Cue="100%">
+                            <Setter Property="RotateTransform.Angle" Value="360" />
+                        </KeyFrame>
+                    </Animation-->
+
+
+					<Animation IterationCount="Infinite" Duration="0:0:1">
+						<!-- 0° -> 180° (下坠阶段：加速) -->
+						<!-- KeySpline="0.5,0 1,1" 实现加速效果 -->
+						<KeyFrame Cue="50%" KeySpline="0.8,0.2,1,1">
+							<Setter Property="RotateTransform.Angle" Value="180" />
+						</KeyFrame>
+
+						<!-- 180° -> 360° (上升阶段：减速) -->
+						<!-- KeySpline="0,0 0.5,1" 实现减速效果 -->
+						<KeyFrame Cue="100%" KeySpline="0,0,0.6,1">
+							<Setter Property="RotateTransform.Angle" Value="360" />
+						</KeyFrame>
+					</Animation>
+
+				</Style.Animations>
+			</Style>
+		</Grid.Styles>
+
+		<!--Arc参数：固定颜色属性而不是动态 Stroke="{StaticResource PrimaryBrush}"-->
+
+		<Arc x:Name="Arc1"
+             Width="40"
+             Height="40"
+             Opacity="0.3"
+             StartAngle="0"
+             Stroke="{DynamicResource PrimaryBrush}"
+             StrokeThickness="5.3"
+             SweepAngle="360" />
+
+		<Arc x:Name="Arc2"
+             Width="40"
+             Height="40"
+             StartAngle="-150"
+             Stroke="{DynamicResource PrimaryBrush}"
+             StrokeThickness="5.3"
+             SweepAngle="90" />
+	</Grid>
+</UserControl>

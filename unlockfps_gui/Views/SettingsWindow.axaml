@@ -1,0 +1,643 @@
+<Window
+    x:Class="UnlockFps.Gui.Views.SettingsWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:UnlockFps.Gui.ViewModels"
+	xmlns:converters="clr-namespace:UnlockFps.Gui.Converters"
+    Title="Settings"
+    Width="410"
+    Height="490"
+    x:DataType="viewModels:SettingsWindowViewModel"
+    CanResize="False"
+    Icon="/Assets/icon.ico"
+    Loaded="Control_OnLoaded"
+    Unloaded="Control_OnUnloaded"
+    mc:Ignorable="d">
+
+    <Design.DataContext>
+        <viewModels:SettingsWindowViewModel />
+    </Design.DataContext>
+
+	<Window.Resources>
+		<!-- 定义资源 -->
+		<converters:FullPath2NameConverter x:Key="FullPath2NameConverter" />
+        <!-- 260102 -->
+        <converters:BoolenConverters2 x:Key="MultiBoolConverter" />
+	</Window.Resources>
+	
+    <Grid Margin="3,5,3,15" RowDefinitions="Auto,*">
+        <!--<Label Content="All settings will be saved immediately" FontWeight="SemiBold" />-->
+        <TabControl Grid.Row="1" SelectedIndex="0">
+            <TabItem Header="General">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                    <!--<ToggleSwitch
+                        IsChecked="{Binding Config.StartMinimized}"
+                        OffContent="Start minimized (Unlocker)"
+                        OnContent="Start minimized (Unlocker)"
+                        ToolTip.Tip="Unlocker will be minimized to tray during startup." />-->
+
+					<ToggleSwitch
+	                    IsChecked="{Binding Config.UseSystemTheme}"
+						Click="OnCustomAccentToggled"
+	                    OffContent="使用系统主题"
+	                    OnContent="使用系统主题" />
+
+					<ToggleSwitch
+	                    IsChecked="{Binding Config.AutoLaunch}"
+	                    OffContent="Launch automatically"
+	                    OnContent="Launch automatically"
+						ToolTip.Tip="Unlocker will be minimized to tray during startup."/>
+					
+                    <ToggleSwitch
+                        IsChecked="{Binding Config.AutoClose}"
+                        OffContent="Close automatically"
+                        OnContent="Close automatically"
+                        ToolTip.Tip="Unlocker will exit upon the game closing." />
+                    <ToggleSwitch
+                        IsChecked="{Binding Config.UsePowerSave}"
+                        OffContent="Power saving mode (Genshin Only)"
+                        OnContent="Power saving mode (Genshin Only)"
+                        ToolTip.Tip="Set fps to &quot;15&quot; and process priority to &quot;Low&quot; when the game window is switched to the background." />
+                    <ToggleSwitch
+                        IsChecked="{Binding Config.ShowDebugConsole}"
+                        OffContent="Show debug console"
+                        OnContent="Show debug console" />
+
+					<ToggleSwitch
+	                    IsChecked="{Binding Config.ForceUmlimitedFps}"
+                        IsEnabled="{Binding Config.ForceUmlimitedFpsV2, Converter={x:Static BoolConverters.Not}}"
+	                    OffContent="V1尝试阻止Genshin 10612-4001错误 (需要重启游戏)"
+	                    OnContent="V1尝试阻止Genshin 10612-4001错误 (需要重启游戏)" 
+                        ToolTip.Tip="尝试阻止因设定帧数过高导致的10612-4001错误,启用该选项,可能会导致抽帧现象" />
+
+					<ToggleSwitch
+	                    IsChecked="{Binding Config.ForceUmlimitedFpsV2}"
+                        IsEnabled="{Binding Config.ForceUmlimitedFps, Converter={x:Static BoolConverters.Not}}"
+	                    OffContent="V2尝试阻止Genshin 10612-4001错误 (需要重启游戏)"
+	                    OnContent="V2尝试阻止Genshin 10612-4001错误 (需要重启游戏)" 
+                        ToolTip.Tip="尝试阻止因设定帧数过高导致的10612-4001错误,游戏版本更新后可能会失效 (260520 v6.6)" />
+
+                    <ToggleSwitch
+	                    IsChecked="{Binding Config.UseHDRGenshin}"
+	                    OffContent="Enable HDR (Genshin Only)"
+	                    OnContent="Enable HDR (Genshin Only)" />
+
+
+                    <Grid ColumnDefinitions="Auto,Auto" VerticalAlignment="Center" Margin="0,0,0,0">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/> <!-- 用于说明文本 -->
+                        </Grid.RowDefinitions>
+
+                        <ToggleSwitch
+                            Grid.Column="0"
+                            x:Name="FOVGenshinSwitch"
+                            IsChecked="{Binding Config.EnableFOVGenshin}"
+                            OffContent="FOV 调整 (Genshin Only)"
+                            ToolTip.Tip="调整视角/FOV (Beta)"
+                            OnContent="FOV 调整 (Genshin Only)" />
+                        <NumericUpDown Width="130"
+                            x:Name="FOVGenshinValue"
+                            Grid.Column="1"
+                            Margin="15,0,0,0"
+                            VerticalAlignment="Center"
+                            FormatString="0"
+                            Increment="1"
+                            ValueChanged="FOV_ValueChanged"
+                            LostFocus="FOVGenshinValue_LostFocus"
+                            IsEnabled="{Binding Config.EnableFOVGenshin}"
+                            Maximum="165"
+                            Minimum="15"
+                            Value="{Binding Config.FOVTargetGenshin,Mode=OneWay}" />
+
+                            <!-- 说明文本（在控件下方）-->
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Margin="0,5,0,0"
+                            FontSize="11"
+                            Foreground="#666666">
+                            需在启动原神前开启FOV调整,否则无法应用;默认值:45;范围:15-165
+                        </TextBlock>
+                    </Grid>
+
+                    <ToggleSwitch
+                        x:Name="FOVGenshinSwitch1"
+                        IsChecked="{Binding Config.EnableFOVGenshinFix}"
+                        OffContent="FOV 调整修复 (Genshin Only)"
+                        OnContent="FOV 调整修复 (Genshin Only)" 
+                        ToolTip.Tip="启用「FOV 调整修复」，则会在判断本来原始视野小于等于 30 时，强制禁用广角，使得部分活动游戏/纪行/角色等界面正常，部分界面仍可能被放大/缩小 (Beta)" />
+
+                    <ToggleSwitch
+                        IsChecked="{Binding Config.DisablePlayerPerspectiveBlur}"
+                        OffContent="禁用视角虚化 (Genshin Only)"
+                        OnContent="禁用视角虚化 (Genshin Only)" 
+                        ToolTip.Tip="启用「禁用视角虚化」，则会在仰视时禁用视角虚化(251207)。需在启动原神前开启否则无法应用" />
+
+                    <ToggleSwitch
+                        IsChecked="{Binding Config.DisplayGenshinFog}"
+                        OffContent="去除雾气 (Genshin Only)"
+                        OnContent="去除雾气 (Genshin Only)" 
+                        ToolTip.Tip="去除雾气效果。需在启动原神前开启否则无法应用" />
+
+					<!--Grid Margin="0,10" ColumnDefinitions="Auto,*">
+                        <Label Content="Game Process Priority: " />
+                        <ComboBox
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
+                            HorizontalAlignment="Stretch"
+                            SelectedIndex="{Binding Config.ProcessPriority}">
+                            <ComboBoxItem>Realtime</ComboBoxItem>
+                            <ComboBoxItem>High</ComboBoxItem>
+                            <ComboBoxItem>Above Normal</ComboBoxItem>
+                            <ComboBoxItem>Normal</ComboBoxItem>
+                            <ComboBoxItem>Below Normal</ComboBoxItem>
+                            <ComboBoxItem>Low</ComboBoxItem>
+                        </ComboBox>
+                    </Grid-->	
+
+                    <Separator Margin="0,5,0,6"/>
+
+                    <TextBlock Margin="0,5,0,0" FontSize="15">
+                        <Run Text="原神高级设置 "/>
+                        <Run Text="(Beta)" Foreground="Orange" />
+                    </TextBlock>
+                    <ToggleSwitch
+                        IsChecked="{Binding Config.LaunchOptions.EnableGensinAdvancedSet}"
+                        OffContent="启用「原神高级设置」"
+                        OnContent="启用「原神高级设置」" 
+                        ToolTip.Tip="• 需在启动游戏前启用&#x0a;• 如遇游戏崩溃,请关闭此选项" />
+
+                    <!--TextBlock
+                        Text="「原神高级设置」技术实现: https://github.com/CodeCubist/FufuLauncher"
+                        Margin="0,0,0,0"
+                        FontSize="11"
+                        Foreground="#666666"
+                        Cursor="Hand"
+                        Tapped="Genshin_Advanced_Implementation_Tapped">
+                        <TextBlock.Styles>
+                            <Style Selector="TextBlock:pointerover">
+                                <Setter Property="Foreground" Value="#0066CC"/>
+                                <Setter Property="TextDecorations" Value="Underline"/>
+                            </Style>
+                        </TextBlock.Styles>
+                    </TextBlock-->
+
+                    <ToggleSwitch
+                        IsEnabled="{Binding Config.LaunchOptions.EnableGensinAdvancedSet}"
+                        IsChecked="{Binding Config.RemoveQuestBannerGensin}"
+                        OffContent="移除任务横幅"
+                        OnContent="移除任务横幅" 
+                        ToolTip.Tip="N/A" />
+                    <ToggleSwitch
+                        IsEnabled="{Binding Config.LaunchOptions.EnableGensinAdvancedSet}"
+                        IsChecked="{Binding Config.RemoveDamageTextGensin}"
+                        OffContent="移除伤害文本"
+                        OnContent="移除伤害文本" 
+                        ToolTip.Tip="N/A" />
+                    <ToggleSwitch
+                        IsEnabled="{Binding Config.LaunchOptions.EnableGensinAdvancedSet}"
+                        IsChecked="{Binding Config.DisableEventCameraMoveGensin}"
+                        OffContent="禁用角色大招动画"
+                        OnContent="禁用角色大招动画" 
+                        ToolTip.Tip="N/A" />
+                    <ToggleSwitch
+                        IsEnabled="{Binding Config.LaunchOptions.EnableGensinAdvancedSet}"
+                        IsChecked="{Binding Config.RemoveTeamProgressGensin}"
+                        OffContent="禁用配队延迟等待"
+                        OnContent="禁用配队延迟等待" 
+                        ToolTip.Tip="跳过配队延迟2秒等待(移除配队条)" />
+                    <ToggleSwitch
+                        IsEnabled="{Binding Config.LaunchOptions.EnableGensinAdvancedSet}"
+                        IsChecked="{Binding Config.HideGenshinUID}"
+                        OffContent="隐藏UID水印"
+                        OnContent="隐藏UID水印" 
+                        ToolTip.Tip="隐藏右下角UID水印" />
+                    <ToggleSwitch
+                        IsEnabled="{Binding Config.LaunchOptions.EnableGensinAdvancedSet}"
+                        IsChecked="{Binding Config.EnableGenshinRemoveGrass}"
+                        OffContent="去除草地 (不支持热更)"
+                        OnContent="去除草地 (不支持热更)" 
+                        ToolTip.Tip="需在启动原神前开启否则无法应用" />
+                    <ToggleSwitch
+                        IsEnabled="{Binding Config.LaunchOptions.EnableGensinAdvancedSet}"
+                        IsChecked="{Binding Config.RedirectCombineEntryGensin}"
+                        OffContent="重定向合成入口"
+                        OnContent="重定向合成入口" 
+                        ToolTip.Tip="N/A" />
+                    <ToggleSwitch
+                        IsEnabled="{Binding Config.LaunchOptions.EnableGensinAdvancedSet}"
+                        IsVisible="{Binding Config.RedirectCombineEntryGensin}"
+                        IsChecked="{Binding Config.EnableGenshinQuickCraftingKey}"
+                        OffContent="使用F12打开合成台"
+                        OnContent="使用F12打开合成台" 
+                        ToolTip.Tip="按下F12按键可立即打开合成台" />
+                    <ToggleSwitch
+                        IsEnabled="{Binding Config.LaunchOptions.EnableGensinAdvancedSet}"
+                        IsChecked="{Binding Config.EnableGenshinCraftingFocusOnly}"
+                        IsVisible="{Binding Config.RedirectCombineEntryGensin}"
+                        OffContent="仅原神处于焦点时启用重定向合成"
+                        OnContent="仅原神处于焦点时启用重定向合成" 
+                        ToolTip.Tip="避免在其他地方可能多次点击F12导致频繁打开合成台" />
+
+                    <ToggleSwitch
+                        IsEnabled="False"
+                        IsChecked="{Binding Config.DisableAdvanceSetForceFps}"
+                        OffContent="修复高级设置导致的抽帧(260102)"
+                        OnContent="修复高级设置导致的抽帧(260102)" 
+                        ToolTip.Tip="需在启动原神前开启否则无法应用(260102)&#x0a;该选项与尝试阻止Genshin 10612-4001错误同时开启&#x0a;将不会应用" />
+
+                    <TextBlock Text="提示:开启重定向合成按F12按键可立即打开合成台" VerticalAlignment="Center" Margin="0,5,0,0"  FontSize="12" Foreground="#666666"/>
+
+                    <Separator Margin="0,10,0,0"/>
+
+
+                    <!--ToggleSwitch
+                        IsChecked="{Binding Config.EnableGenshinQuickCrafting}"
+                        OffContent="启用快捷合成台"
+                        OnContent="启用快捷合成台" 
+                        ToolTip.Tip="需在启动原神前开启否则无法应用(260116)&#x0a;如遇游戏崩溃等其他问题，请关闭" /-->
+
+
+                    <!--ToggleSwitch
+                        Margin="0,0,0,0"
+                        IsChecked="{Binding Config.EnableGenshinQuickCraftingFocus}"
+                        IsEnabled="{Binding Config.EnableGenshinQuickCrafting}"
+                        OffContent="仅在原神处于焦点时打开合成台"
+                        OnContent="仅在原神处于焦点时打开合成台" 
+                        ToolTip.Tip="N/A" /-->
+
+                    <TextBlock Text="Ex_M 插件功能 (需载入 ApiServer.dll)" VerticalAlignment="Center" Margin="0,10,0,0"  FontSize="12" Foreground="#666666"/>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,10,0,0">
+                        <Button    
+                            Click="OpenCraftingTableHandler"
+                            Content="打开合成台"/>
+                        <!--TextBlock Text="功能实现:Ex_M" VerticalAlignment="Center" Margin="15,0,0,0"  FontSize="12" Foreground="#666666"/-->
+                        <!--ToggleSwitch
+                            Margin="15,0,0,0"
+                            IsChecked="{Binding Config.EnableGenshinQuickCraftingTab}"
+                            IsEnabled="{Binding Config.EnableGenshinQuickCrafting}"
+                            OffContent="使用快捷键 F10 开启"
+                            OnContent="使用快捷键 F10 开启" 
+                            ToolTip.Tip="N/A" /-->
+
+                        <!--TextBlock Text="功能实现:Ex_M" VerticalAlignment="Center" Margin="10,0,0,0"  FontSize="12" Foreground="#666666"/-->
+
+                    </StackPanel>
+
+                    <!--TextBlock Text="「快捷合成台」 功能实现:Ex_M" VerticalAlignment="Center" Margin="0,10,0,0"  FontSize="12" Foreground="#666666"/-->
+
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Launch Opts (Genshin only)">
+                <StackPanel>
+                    <ToggleSwitch
+                        IsChecked="{Binding Config.LaunchOptions.IsWindowBorderless}"
+                        IsEnabled="{Binding Config.LaunchOptions.Fullscreen, Converter={x:Static BoolConverters.Not}}"
+                        OffContent="Make window borderless"
+                        OnContent="Make window borderless" />
+                    <ToggleSwitch
+                        IsChecked="{Binding Config.LaunchOptions.Fullscreen}"
+                        IsEnabled="{Binding Config.LaunchOptions.IsWindowBorderless, Converter={x:Static BoolConverters.Not}}"
+                        OffContent="Fullscreen"
+                        OnContent="Fullscreen" />
+                    <ToggleSwitch
+                        IsChecked="{Binding Config.LaunchOptions.UseCustomResolution}"
+                        OffContent="Use Custom Resolution"
+                        OnContent="Use Custom Resolution" />
+                    <ToggleSwitch
+                        IsChecked="{Binding Config.LaunchOptions.UseMobileUI}"
+                        IsEnabled="{Binding Config.EnableGenshinMbUIWt, Converter={x:Static BoolConverters.Not}}"
+                        OffContent="Use Mobile UI"
+                        OnContent="Use Mobile UI" />
+                    <ToggleSwitch
+                        IsChecked="{Binding Config.EnableGenshinMbUIWt}"
+                        IsEnabled="{Binding Config.LaunchOptions.UseMobileUI, Converter={x:Static BoolConverters.Not}}"
+                        OffContent="Use Mobile UI (Use winTEuser unlocker)"
+                        OnContent="Use Mobile UI (Use winTEuser unlocker)" 
+                        ToolTip.Tip="https://github.com/winTEuser/Genshin_StarRail_fps_unlocker"
+                        />
+
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            Content="Resolution: " />
+                        <Grid
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="5,10,0,10"
+                            HorizontalAlignment="Stretch"
+                            ColumnDefinitions="*,Auto,*"
+                            IsEnabled="{Binding Config.LaunchOptions.UseCustomResolution}">
+                            <NumericUpDown
+                                FormatString="0"
+                                Increment="1"
+                                Value="{Binding Config.LaunchOptions.CustomResolutionX}" />
+                            <Label
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Content="×" />
+                            <NumericUpDown
+                                Grid.Column="2"
+                                FormatString="0"
+                                Increment="1"
+                                Value="{Binding Config.LaunchOptions.CustomResolutionY}" />
+                        </Grid>
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            Content="Fullscreen Mode: " />
+                        <ComboBox
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="5,10,0,10"
+                            HorizontalAlignment="Stretch"
+                            IsEnabled="{Binding Config.LaunchOptions.Fullscreen}"
+                            SelectedIndex="{Binding Config.LaunchOptions.IsExclusiveFullscreen}">
+                            <ComboBoxItem>Borderless</ComboBoxItem>
+                            <ComboBoxItem>Exclusive</ComboBoxItem>
+                        </ComboBox>
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            Content="Monitor: " />
+                        <NumericUpDown
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Margin="5,10,0,10"
+                            HorizontalAlignment="Stretch"
+                            FormatString="0"
+                            Increment="1"
+                            Value="{Binding Config.LaunchOptions.MonitorId}" />
+                    </Grid>
+
+					<Grid Margin="0,10" ColumnDefinitions="Auto,*">
+						<Label Content="Game Process Priority: " />
+						<ComboBox
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
+                            HorizontalAlignment="Stretch"
+                            SelectedIndex="{Binding Config.ProcessPriority}">
+							<ComboBoxItem>Realtime</ComboBoxItem>
+							<ComboBoxItem>High</ComboBoxItem>
+							<ComboBoxItem>Above Normal</ComboBoxItem>
+							<ComboBoxItem>Normal</ComboBoxItem>
+							<ComboBoxItem>Below Normal</ComboBoxItem>
+							<ComboBoxItem>Low</ComboBoxItem>
+						</ComboBox>
+					</Grid>
+					
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="DLLs">
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,*">
+                    <Label Grid.ColumnSpan="2" Content="DLLs will be injected in the order of this list" />
+                    <ListBox
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="0,12,0,0"
+                        BorderBrush="{DynamicResource TextControlBorderBrush}"
+                        BorderThickness="1"
+                        ItemsSource="{Binding Config.LaunchOptions.DllList}"
+                        SelectedItem="{Binding SelectedDll}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource FullPath2NameConverter}}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ItemContainerTheme>
+                            <ControlTheme BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
+                                <Setter Property="ToolTip.Tip" Value="{Binding}" />
+                            </ControlTheme>
+                        </ListBox.ItemContainerTheme>
+                    </ListBox>
+                    <StackPanel
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="15,12,0,0">
+                        <Button
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding AddDllCommand}"
+                            Content="Add" />
+                        <Button
+                            Margin="0,15,0,0"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding RemoveDllCommand}"
+                            Content="Remove" />
+                        <ToggleSwitch
+                            IsChecked="{Binding Config.LaunchOptions.SuspendLoad}"
+                            OffContent="Suspend Load"
+                            OnContent="Suspend Load">
+                            <ToolTip.Tip>
+                                <TextBlock>
+                                    <Run Text="This can ensure dll gets loaded before the game starts." />
+                                    <LineBreak />
+                                    <Run Text="It may not work all the times." />
+                                    <LineBreak />
+                                    <Run Text="Uncheck this if the game crashes." />
+
+									<LineBreak />
+									<Run Text="It won't be applied in manual mode" />
+
+								</TextBlock>
+                            </ToolTip.Tip>
+                        </ToggleSwitch>
+
+						<ToggleSwitch
+	                        IsChecked="{Binding Config.ApplySRLoadDll}"
+	                        OffContent="Apply in StarRail"
+	                        OnContent="Apply in StarRail">
+							<ToolTip.Tip>
+								<TextBlock>
+									<Run Text="Also Load DLL in StarRail." />
+									<LineBreak />
+									<Run Text="It may not work all the times." />
+									<LineBreak />
+									<Run Text="Uncheck this if the game crashes." />
+								</TextBlock>
+							</ToolTip.Tip>
+						</ToggleSwitch>
+						
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+			<TabItem Header="SR only">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+				<!-- 将 StackPanel 替换为 Grid -->
+				<Grid Margin="0,0,0,0">
+					<!-- 定义两行：
+             Row 0: 高度由内容决定 (Auto)
+             Row 1: 占据所有剩余空间 (*) -->
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
+
+					<!-- 原来的内容放在第一行 (Row 0) -->
+					<StackPanel Grid.Row="0">
+                            <Grid ColumnDefinitions="Auto,Auto" VerticalAlignment="Center" Margin="0,0,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/> <!-- 用于说明文本 -->
+                            </Grid.RowDefinitions>
+                            <ToggleSwitch
+                                Grid.Column="0"
+                                x:Name="FOVStarRailSwitch"
+                                IsChecked="{Binding Config.EnableFOVStarRail}"
+                                OffContent="FOV 调整 (StarRail Only)"
+                                ToolTip.Tip="调整视角/FOV (Beta) 若此功能导致游戏崩溃或者调整fov无效果,若无效可调高配置文件SRFovSpeed和SRFovDepth的值,如spd调整为150或200,dep调整为200。此功能为实验性功能,崩溃属于正常现象"
+                                OnContent="FOV 调整 (StarRail Only)" />
+                            <NumericUpDown Width="130"
+                                x:Name="FOVStarRailValue"
+                                Grid.Column="1"
+                                Margin="15,0,0,0"
+                                VerticalAlignment="Center"
+                                FormatString="0"
+                                Increment="1"
+                                ValueChanged="FOV_SR_ValueChanged"
+                                LostFocus="FOVSRValue_LostFocus"
+                                IsEnabled="{Binding Config.EnableFOVStarRail}"
+                                Maximum="165"
+                                Minimum="15"
+                                Value="{Binding Config.FOVTargetStarRail,Mode=OneWay}" />
+
+                                <!-- 说明文本（在控件下方）-->
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                Margin="0,5,0,0"
+                                FontSize="11"
+                                Foreground="#666666">
+                                需在启动StarRail前开启FOV调整,否则无法应用;默认值:45;范围:15-165
+                            </TextBlock>
+                        </Grid>
+           
+                        <ToggleSwitch
+                            x:Name="FOVStarRailSwitch1"
+                            IsChecked="{Binding Config.EnableFOVStarRailFix}"
+                            OffContent="FOV 调整修复 (StarRail Only)"
+                            OnContent="FOV 调整修复 (StarRail Only)" 
+                            ToolTip.Tip="启用「FOV 调整修复」,则会在判断本来原始视野小于等于 30 时,强制禁用广角,使得部分活动礼记/无名勋礼/角色等界面正常,部分界面仍可能被放大/缩小 (Beta)" />
+
+                        <ToggleSwitch IsChecked="{Binding Config.UsePowerSaveSR}"
+	                        OffContent="Power saving mode (SR Only)"
+						    ToolTip.Tip="Set fps to &quot;15&quot; and process priority to &quot;Low&quot; when the game window is switched to the background."
+	                        OnContent="Power saving mode (SR Only)" Margin="0,0,0,0"/>
+
+                        <ToggleSwitch
+                            IsChecked="{Binding Config.EnableStarRailMbUIWt}"
+                            OffContent="Use Mobile UI (Use winTEuser unlocker)"
+                            OnContent="Use Mobile UI (Use winTEuser unlocker)" 
+                            ToolTip.Tip="https://github.com/winTEuser/Genshin_StarRail_fps_unlocker"/>
+
+                         <Separator Margin="0,5,0,0"/>
+
+                        <ToggleSwitch IsChecked="{Binding Config.EnableSRGraphicOptionSet}"
+	                        OffContent="Use Custom Graphic Option Set (SR Only)"
+						    ToolTip.Tip="Enable Custom Graphic Option Set"
+	                        OnContent="Use Custom Graphic Option Set (SR Only)"/>
+
+                        <ToggleSwitch IsChecked="{Binding Config.SRCustomFullScreen}" IsEnabled="{Binding Config.EnableSRGraphicOptionSet}"
+	                        OffContent="Fullscreen (SR Only)"
+						    ToolTip.Tip="N/A"
+	                        OnContent="Fullscreen (SR Only)"/>
+
+                        <ToggleSwitch IsChecked="{Binding Config.EnableSRCustomResolutionSet}" IsEnabled="{Binding Config.EnableSRGraphicOptionSet}"
+	                        OffContent="Use Custom Resolution (SR Only)"
+                            Checked="ToggleSwitch_Checked1y"
+						    ToolTip.Tip="Possible preset values are as follows: '3840x2160', '2560x1440', '1920x1440', '1920x1200', '1920x1080', '1680x1050', '1600x1200', '1600x1024', '1600x900', '1440x1080', '1440x900', '1366x768', '1360x768', '1280x1440', '1280x1024', '1280x960', '1280x800', '1280x768', '1176x664', '1152x864', '1024x768', '800x600', '720x576', '720x480', '640x480'"
+	                        OnContent="Use Custom Resolution (SR Only)"/>
+
+
+
+                        <Grid Margin="0,5" ColumnDefinitions="Auto,*" IsVisible="{Binding Config.EnableSRCustomResolutionSet}" IsEnabled="{Binding Config.EnableSRGraphicOptionSet}">
+                            <!-- 左侧标签 -->
+                            <Label Content="Resolution:" Grid.Column="0"/>
+
+                            <!-- 右侧控件容器 -->
+                            <Grid Grid.Column="1"
+                                  HorizontalAlignment="Right"
+                                  ColumnDefinitions="*,Auto,*">
+                                <NumericUpDown Grid.Column="0"                       
+                                          HorizontalAlignment="Stretch"
+                                          Width="125"
+                                          Increment="1"
+                                          Maximum="10000"
+                                          Minimum="100"
+                                          ValueChanged="SRCustomResolutionX_ValueChanged"
+                                          Value="{Binding Config.SRCustomResolutionWidth,Mode=OneWay}">
+                                </NumericUpDown>
+
+                                <Label Grid.Column="1" VerticalAlignment="Center" Content=" × " />
+
+                                <NumericUpDown Grid.Column="2"
+                                          HorizontalAlignment="Stretch"
+                                          Width="125"
+                                          Increment="1"
+                                          Maximum="10000"
+                                          Minimum="100"
+                                          ValueChanged="SRCustomResolutionY_ValueChanged"
+                                          Value="{Binding Config.SRCustomResolutionHeight,Mode=OneWay}">
+                                </NumericUpDown>
+                            </Grid>
+                        </Grid>
+
+                        <TextBlock
+                            Margin="0,5,0,0"
+                            FontSize="11"
+                            Foreground="#666666"
+                            Text="After chaging resolution, you need to restart the game"
+                            >
+                            
+                        </TextBlock>
+
+                        <Separator Margin="0,10,0,5"/>
+
+
+                        <Grid Margin="0,10" ColumnDefinitions="Auto,*">
+							<Label Content="Game Process Priority: " />
+							<ComboBox
+								Grid.Column="1"
+								Margin="5,0,0,0"
+								HorizontalAlignment="Stretch"
+								SelectedIndex="{Binding Config.ProcessPrioritySR}">
+								<ComboBoxItem>Realtime</ComboBoxItem>
+								<ComboBoxItem>High</ComboBoxItem>
+								<ComboBoxItem>Above Normal</ComboBoxItem>
+								<ComboBoxItem>Normal</ComboBoxItem>
+								<ComboBoxItem>Below Normal</ComboBoxItem>
+								<ComboBoxItem>Low</ComboBoxItem>
+							</ComboBox>
+						</Grid>
+
+						<TextBlock Margin="0,0,0,11" >Custom StarRail Launch Param:</TextBlock>
+						<TextBox x:Name="SRCustomParamTextBox" Watermark="Custom Launch Param is disabled" Text="{Binding Config.SRCustomParam}"/>
+					</StackPanel>
+
+					<!-- 按钮面板放在第二行 (Row 1) 并垂直对齐到底部 -->
+					<StackPanel Grid.Row="1" VerticalAlignment="Bottom">
+						<DockPanel Margin="3" LastChildFill="False">
+							<!-- Browse 按钮停靠在左边 -->
+							<!--Button Content="Browse..." DockPanel.Dock="Left"/-->
+							<!-- Confirm 按钮停靠在右边 -->
+							<!--Button Content="Confirm Param" DockPanel.Dock="Right" Click="ConfirmSRCustomParam" Width="140"/-->
+						</DockPanel>
+					</StackPanel>
+				</Grid>
+                </ScrollViewer>
+			</TabItem>
+        </TabControl>
+    </Grid>
+</Window>

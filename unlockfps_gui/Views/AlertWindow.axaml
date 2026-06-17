@@ -1,0 +1,54 @@
+<Window
+    x:Class="UnlockFps.Gui.Views.AlertWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:UnlockFps.Gui.Views"
+    Title="Error"
+    x:DataType="views:AlertWindow"
+    CanResize="False"
+    Icon="/Assets/icon.ico"
+    SizeToContent="WidthAndHeight"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Grid
+        MinWidth="150"
+        Margin="15"
+        RowDefinitions="Auto,Auto">
+        <StackPanel Margin="15,15,15,20" Orientation="Horizontal">
+            <Panel VerticalAlignment="Top">
+                <TextBlock
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="32" IsVisible="{Binding IsError}"
+                    Foreground="{DynamicResource SystemFillColorCritical}"
+                    Text="&#xEB90;">
+                    <!--<TextBlock.Foreground>
+                        <LinearGradientBrush>
+                            <GradientStop Offset="0" Color="#FF2323" />
+                            <GradientStop Offset="1" Color="#cc3232" />
+                        </LinearGradientBrush>
+                    </TextBlock.Foreground>-->
+                </TextBlock>
+                <TextBlock
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="32" IsVisible="{Binding IsError,Converter={x:Static BoolConverters.Not}}"
+                    Foreground="{DynamicResource SystemFillColorSuccess}"
+                    Text="&#xF167;">
+                </TextBlock>
+            </Panel>
+            <TextBlock
+                Margin="7,0,0,0"
+                VerticalAlignment="Center"
+                Text="{Binding Text}" 
+				TextWrapping="Wrap" 
+                MaxWidth="300"
+				/>
+        </StackPanel>
+        <Button
+            Grid.Row="1"
+            HorizontalAlignment="Right"
+            Click="Button_OnClick"
+            Content="OK" />
+    </Grid>
+</Window>

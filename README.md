@@ -1,10 +1,11 @@
-# Genshin Impact FPS Unlocker
+# Genshin Impact & Honkai: Star Rail FPS Unlocker
 
-A forked version which rewrites GUI and supports linux with WINE.
+A forked version which rewrites GUI.
+Modified by 30launcher
 
-![image](https://github.com/Milkitic/genshin-fps-unlock-universal/assets/24785749/e92fe460-c045-46ef-bbf1-7f350e7eb179)
+![Screenshot](./assets/Screenshot.png)
 
-> Running in Windows 11 & Linux KDE
+> Running in Windows 10 & 11
 
  - This tool helps you to unlock the 60 fps limit in the game
  - This is an external program which uses **WriteProcessMemory** to write the desired fps to the game
@@ -31,21 +32,6 @@ A forked version which rewrites GUI and supports linux with WINE.
  - Run the exe as administrator, and leave the exe running
  >It requires adminstrator because the game needs to be started by the unlocker and the game requires such permission
  - To load other third-party plugins, go to `Options->Settings->DLLs` and click add
-
- ### Running with wine
-
- #### Prerequisite
- 
- ```
- WINEPREFIX=... winetricks dotnet45
- WINEPREFIX=... winecfg -v win7
- ```
- #### Running
- 
- ```
- WINEPREFIX=... wine unlockfps.exe
- ```
- ![Screenshot_20240206_144503](https://github.com/Milkitic/genshin-fps-unlock-aot/assets/24785749/c1e0377a-89eb-49f6-958a-37b9229c5875)
 
  ## Version 3.0.0 Changes
  - Rewritten the project in .NET 8

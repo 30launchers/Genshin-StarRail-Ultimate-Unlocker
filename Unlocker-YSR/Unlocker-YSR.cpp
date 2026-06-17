@@ -802,6 +802,8 @@ bool InstallFrameHook()
         MessageBoxA(nullptr, "Set_FrameCountAddr search failed!", "PatternScanner", MB_OK | MB_ICONERROR);
     }
     g_original_Set_FrameCount = (Set_FrameCount_t)Set_FrameCountAddr;
+
+	return true;
 }
 
 

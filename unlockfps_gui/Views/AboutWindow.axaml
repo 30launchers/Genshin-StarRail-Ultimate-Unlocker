@@ -15,7 +15,7 @@
 			<TextBlock TextAlignment="Center" TextWrapping="Wrap">
 				<Run Text="Genshin SR FPS Unlocker" FontSize="15"/>
 				<LineBreak />
-				<Run x:Name="Run_Version" Text="v3.3.6s" />
+				<Run x:Name="Run_Version" Text="v3.3.7s" />
 			</TextBlock>
 
 			<TextBlock
@@ -52,18 +52,27 @@
 
 			<TextBlock TextAlignment="Center" TextWrapping="Wrap">
 				<LineBreak />
-				<Run Text="Modified by 30launcher date:260520" />
+				<Run Text="Modified by 30launcher date:260703" />
 			</TextBlock>
 
-			<TextBlock
-				Classes="link"
-				Tapped="HyperLink_OnTapped_Authur"
-				Text="bilibili"
-				Tag="https://space.bilibili.com/456492426"
-				TextAlignment="Center"
-				TextWrapping="Wrap" />
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                Spacing="8">
 
+                <TextBlock
+                    Classes="link"
+                    Tapped="HyperLink_OnTapped_Authur"
+                    Text="Bilibili"
+                    Tag="https://space.bilibili.com/456492426" />
 
+                <TextBlock
+                    Classes="link"
+                    Tapped="HyperLink_OnTapped_Authur"
+                    Text="GitHub"
+                    Tag="https://github.com/30launchers" />
+
+            </StackPanel>
 		</StackPanel>
 	</Border>
 </Window>

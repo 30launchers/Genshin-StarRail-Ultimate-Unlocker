@@ -876,7 +876,7 @@ int HookGet_FrameCount() {
             //DebugPrint("[DLL] HookGet_Frame mode V2");
 
             // 260307 防报错10612-4001 地址抓取
-            if (false)
+            if (true)
             {
                 // --- 新增日志控制逻辑开始 ---
                 static int last_ret = -999; // 记录上次的值，初始化为一个不可能的值
@@ -933,8 +933,15 @@ int HookGet_FrameCount() {
             //    return 60;
             //}
 
-            // 防止抽帧 v6.6 260520
-            if (offset != 0x0EAAD725)
+            //// 防止抽帧 v6.6 260520
+            //if (offset != 0x0EAAD725)
+            //{
+            //    //DebugPrint("[DLL] detected addr now return 60");
+            //    return 60;
+            //}
+
+            // 防止抽帧 v6.7 260701
+            if (offset != 0x0fb8cb22)
             {
                 //DebugPrint("[DLL] detected addr now return 60");
                 return 60;

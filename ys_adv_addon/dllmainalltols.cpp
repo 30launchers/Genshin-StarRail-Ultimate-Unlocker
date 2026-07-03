@@ -301,9 +301,6 @@ bool __fastcall hook_EventCameraMove(void* pThis, void* event)
 }
 
 
-
-
-
 // 隐藏任务横幅的函数
 void HideQuestBannerFunction()
 {
@@ -324,6 +321,17 @@ void HideQuestBannerFunction()
 }
 
 
+static DWORD lastHideQuestBannerTime = 0;
+void UpdateFunction()
+{
+    DWORD now = GetTickCount();
+
+    if (now - lastHideQuestBannerTime >= 150)
+    {
+        lastHideQuestBannerTime = now;
+        HideQuestBannerFunction();
+    }
+}
 
 
 // 隐藏UID的函数
@@ -620,7 +628,8 @@ __int64 HookGameUpdate(__int64 a1, const char* a2)
         bF12Pressed = bCurrentF12State;
     }
 
-
+	// 调用更新函数，处理任务横幅隐藏等逻辑
+	UpdateFunction();
 
     return result;
 }
@@ -675,15 +684,15 @@ DWORD WINAPI InitializeThread(LPVOID lpParam)
     // 错误收集容器 260201
     std::vector<std::string> errors;
 
-    // 扫描 SetupQuestBanner
-    uintptr_t setup_quest_banner_addr = PatternScanner::ScanMain("41 57 41 56 56 57 55 53 48 81 EC ? ? ? ? 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 48 89 CE 80 3D ? ? ? ? 00 0F 85 ? ? ? ? 48 8B 96");
-    if (!setup_quest_banner_addr)
-    {
-        //MessageBoxA(nullptr, "failed!", "SetupQuestBanner", MB_OK | MB_ICONERROR);
-        //return 1;
+    //// 扫描 SetupQuestBanner
+    //uintptr_t setup_quest_banner_addr = PatternScanner::ScanMain("41 57 41 56 56 57 55 53 48 81 EC ? ? ? ? 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 48 89 CE 80 3D ? ? ? ? 00 0F 85 ? ? ? ? 48 8B 96");
+    //if (!setup_quest_banner_addr)
+    //{
+    //    //MessageBoxA(nullptr, "failed!", "SetupQuestBanner", MB_OK | MB_ICONERROR);
+    //    //return 1;
 
-        errors.push_back("scan SetupQuestBanner failed!");
-    }
+    //    errors.push_back("scan SetupQuestBanner failed!");
+    //}
 
 
     // 扫描 FindString
@@ -729,8 +738,20 @@ DWORD WINAPI InitializeThread(LPVOID lpParam)
 
 
 	// 扫描 damage text ShowOneDamageTextEx
-    std::string pattern_dam = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC ? ? ? ? 44 0F 29 9C 24 ? ? ? ? 44 0F 29 94 24 ? ? ? ? 44 0F 29 8C 24 ? ? ? ? 44 0F 29 84 24 ? ? ? ? 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 44 89 CF 45 89 C4";
+    std::string pattern_dam = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC D8 01 00 00 44 0F 29 AC 24 C0 01 00 00 44 0F 29 A4 24 B0 01 00 00";
+    std::string pattern_dam2 = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC ? ? ? ? 44 0F 29 9C 24 ? ? ? ? 44 0F 29 94 24 ? ? ? ? 44 0F 29 8C 24 ? ? ? ? 44 0F 29 84 24 ? ? ? ? 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 44 89 CF 45 89 C4";
+    std::string pattern_dam3 = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC ? ? ? ? 44 0F 29 9C 24 ? ? ? ? 44 0F 29 94 24 ? ? ? ? 44 0F 29 8C 24 ? ? ? ? 44 0F 29 84 24 ? ? ? ? 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 44 89 CF";
     uintptr_t targetAddrdam = PatternScanner::ScanMain(pattern_dam);
+    if (!targetAddrdam) {
+        targetAddrdam = PatternScanner::ScanMain(pattern_dam2);
+    }
+    if (!targetAddrdam) {
+        targetAddrdam = PatternScanner::ScanMain(pattern_dam3);
+    }
+    if (!targetAddrdam)
+    {
+        errors.push_back("scan HideDamageText failed!");
+    }
     if (targetAddrdam == 0) 
     {
         //MessageBoxA(nullptr, "failed!", "HideDamageText", MB_ICONERROR);
@@ -895,13 +916,13 @@ DWORD WINAPI InitializeThread(LPVOID lpParam)
 
 
 
-    if (!MinHookManager::Add((void*)setup_quest_banner_addr, (void*)Hook_SetupQuestBanner, (void**)&g_original_setup_quest_banner))
-    {
-        //MessageBoxA(nullptr, "Failed to install hook!", "SetupQuestBanner", MB_OK | MB_ICONERROR);
-        //return 1;
+  //  if (!MinHookManager::Add((void*)setup_quest_banner_addr, (void*)Hook_SetupQuestBanner, (void**)&g_original_setup_quest_banner))
+  //  {
+  //      //MessageBoxA(nullptr, "Failed to install hook!", "SetupQuestBanner", MB_OK | MB_ICONERROR);
+  //      //return 1;
 
-		errors.push_back("hook SetupQuestBanner failed!");
-    }
+		//errors.push_back("hook SetupQuestBanner failed!");
+  //  }
 
 
     bool successdam = MinHookManager::Add(reinterpret_cast<void*>(targetAddrdam),reinterpret_cast<void*>(&hook_ShowOneDamageTextEx),reinterpret_cast<void**>(&original_ShowOneDamageTextEx));

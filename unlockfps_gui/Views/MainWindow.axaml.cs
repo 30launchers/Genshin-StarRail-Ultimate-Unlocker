@@ -653,9 +653,9 @@ namespace UnlockFps.Gui.Views
             string filePath = Path.Combine(AppContext.BaseDirectory, "ulk_ysr_tools", outputFileName);
             //string filePath = Path.Combine(AppContext.BaseDirectory, "ulk_ysr_tools\\advantol.dll");
 
-            // 检查文件是否已存在
-            if (File.Exists(filePath))
-                return filePath;
+            // 检查文件是否已存在 取消此检查以确保每次都从嵌入资源提取最新版本260704
+            //if (File.Exists(filePath))
+            //    return filePath;
 
             var assembly = Assembly.GetExecutingAssembly();
 

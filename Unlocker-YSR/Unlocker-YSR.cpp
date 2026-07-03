@@ -876,7 +876,7 @@ int HookGet_FrameCount() {
             //DebugPrint("[DLL] HookGet_Frame mode V2");
 
             // 260307 防报错10612-4001 地址抓取
-            if (true)
+            if (false)
             {
                 // --- 新增日志控制逻辑开始 ---
                 static int last_ret = -999; // 记录上次的值，初始化为一个不可能的值

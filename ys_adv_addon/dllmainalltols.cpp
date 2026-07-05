@@ -146,8 +146,6 @@ DWORD WINAPI ReadConfigThread(LPVOID lpParam)
 }
 
 
-
-
 //数字伤害显示相关
 struct Il2CppObject {
     void* klass;
@@ -245,15 +243,6 @@ void __stdcall Hook_Grass(void* p_this, bool active) {
 }
 
 
-
-
-
-
-
-
-
-
-
 // OpenTeam 钩子 - 移除队伍动画
 void __fastcall Hook_OpenTeam() {
     if (g_config.enable_remove_team_anim && g_pCheckCanEnter && g_pOpenTeamPageAccordingly) {
@@ -334,7 +323,75 @@ void UpdateFunction()
 }
 
 
+//bool HideUIDFunction()
+//{
+//    if (!g_find_string || !g_find_game_object || !g_set_active)
+//        return false;
+//
+//    bool all_success = true;
+//
+//    const char* uid_path_watermark = "/BetaWatermarkCanvas(Clone)/Panel/TxtUID";
+//    Il2CppString* str_obj_watermark = g_find_string(uid_path_watermark);
+//    if (str_obj_watermark) {
+//        void* uid_obj_watermark = g_find_game_object(str_obj_watermark);
+//        if (uid_obj_watermark) {
+//            g_set_active(uid_obj_watermark, !g_config.hide_uid);
+//        }
+//        else {
+//            all_success = false;
+//        }
+//    }
+//    else {
+//        all_success = false;
+//    }
+//
+//    const char* uid_path_main = "/Canvas/Pages/PlayerProfilePage/GrpProfile/Right/GrpPlayerCard/UID";
+//    Il2CppString* str_obj_main = g_find_string(uid_path_main);
+//    if (str_obj_main) {
+//        void* uid_obj_main = g_find_game_object(str_obj_main);
+//        if (uid_obj_main) {
+//            g_set_active(uid_obj_main, !g_config.hide_uid);
+//        }
+//        else {
+//            all_success = false;
+//        }
+//    }
+//    else {
+//        all_success = false;
+//    }
+//
+//    return all_success;
+//}
+
+
 // 隐藏UID的函数
+//void HideUIDFunction()
+//{
+//    if (!g_find_string || !g_find_game_object || !g_set_active)
+//    {
+//        return;
+//    }
+//
+//    const char* uid_path_watermark = "/BetaWatermarkCanvas(Clone)/Panel/TxtUID";
+//    Il2CppString* str_obj_watermark = g_find_string(uid_path_watermark);
+//    if (str_obj_watermark) {
+//        void* uid_obj_watermark = g_find_game_object(str_obj_watermark);
+//        if (uid_obj_watermark) {
+//            g_set_active(uid_obj_watermark, !g_config.hide_uid);  // true=显示, false=隐藏
+//        }
+//    }
+//
+//    const char* uid_path_main = "/Canvas/Pages/PlayerProfilePage/GrpProfile/Right/GrpPlayerCard/UID";
+//    Il2CppString* str_obj_main = g_find_string(uid_path_main);
+//    if (str_obj_main) {
+//        void* uid_obj_main = g_find_game_object(str_obj_main);
+//        if (uid_obj_main) {
+//            g_set_active(uid_obj_main, !g_config.hide_uid);  // true=显示, false=隐藏
+//        }
+//    }
+//}
+
+
 void HideUIDFunction()
 {
 
@@ -371,27 +428,6 @@ void HideUIDFunction()
 }
 
 
-
-
-//// 隐藏UID的函数
-//void HideUIDFunction()
-//{
-//    if (!g_config.hide_uid || !g_find_string || !g_find_game_object || !g_set_active) 
-//    {
-//        return;
-//    }
-//
-//    // 隐藏UID逻辑
-//    const char* uid_path = "/BetaWatermarkCanvas(Clone)/Panel/TxtUID";
-//    Il2CppString* str_obj = g_find_string(uid_path);
-//    if (str_obj) {
-//        void* uid_obj = g_find_game_object(str_obj);
-//        if (uid_obj) {
-//            g_set_active(uid_obj, false);
-//        }
-//    }
-//}
-
 // Hook函数
 static void __stdcall Hook_SetupQuestBanner(void* p_this) {
     // 调用原始函数
@@ -405,9 +441,6 @@ static void __stdcall Hook_SetupQuestBanner(void* p_this) {
 	// 隐藏任务横幅
     HideQuestBannerFunction();
 }
-
-
-
 
 
 // 合成台重定向相关
@@ -497,6 +530,9 @@ static std::chrono::steady_clock::time_point first_uid_hide_time;
 static constexpr std::chrono::seconds HIDE_UID_INTERVAL_TIME{ 3 };
 static bool first_uid_hide_time_initialized = false;  // 新增：标记是否已初始化
 
+static std::chrono::steady_clock::time_point last_hide_try_time;
+static bool last_hide_time_init = false;
+
 // GameUpdate Hook
 typedef int(*GameUpdate_t)(__int64 a1, const char* a2);
 GameUpdate_t g_original_GameUpdate = nullptr;
@@ -545,6 +581,38 @@ __int64 HookGameUpdate(__int64 a1, const char* a2)
             HideUIDFunction();
         }
     }
+
+    //if (!first_hide_uid_state && first_uid_hide_time_initialized)
+    //{
+    //    auto now = std::chrono::steady_clock::now();
+
+    //    // 超时5分钟
+    //    if (now - first_uid_hide_time >= std::chrono::minutes(5))
+    //    {
+    //        first_hide_uid_state = true;
+    //        return result;
+    //    }
+
+    //    // 初始化 last time
+    //    if (!last_hide_time_init)
+    //    {
+    //        last_hide_try_time = now;
+    //        last_hide_time_init = true;
+    //    }
+
+    //    // 每3秒才允许执行一次
+    //    if (now - last_hide_try_time >= std::chrono::seconds(3))
+    //    {
+    //        last_hide_try_time = now;
+
+    //        OutputDebugStringA("[DLL] HIDING UIDDDDDDD");
+
+    //        if (HideUIDFunction())
+    //        {
+    //            first_hide_uid_state = true;
+    //        }
+    //    }
+    //}
 
 
     // 检查状态是否变化
@@ -802,8 +870,6 @@ DWORD WINAPI InitializeThread(LPVOID lpParam)
     //}
 
 
-
-
     // =============================================================================================
 	// 队伍相关函数扫描
     // =============================================================================================
@@ -884,7 +950,6 @@ DWORD WINAPI InitializeThread(LPVOID lpParam)
     }
 
 
-
     if (find_game_object_addr)
     {
         // 解析相对跳转
@@ -912,8 +977,6 @@ DWORD WINAPI InitializeThread(LPVOID lpParam)
 			errors.push_back("ResolveRelative SetActive failed!");
         }
     }
-
-
 
 
   //  if (!MinHookManager::Add((void*)setup_quest_banner_addr, (void*)Hook_SetupQuestBanner, (void**)&g_original_setup_quest_banner))

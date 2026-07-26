@@ -1092,6 +1092,8 @@ struct GenshinAdvancedConfig {
 	bool HideGenshinUID;
 	bool RedirectCombineEntryKey;
     bool EnableRemoveGrass;
+	bool DisableDiverCamera;
+	bool DisableDiveMosaic;
 };
 
 // ½âÎöÑÚÂë
@@ -1106,6 +1108,7 @@ GenshinAdvancedConfig ParseGenshinConfigMask(int configMask) {
 	config.HideGenshinUID = (configMask & (1 << 6)) != 0;
 	config.RedirectCombineEntryKey = (configMask & (1 << 7)) != 0;
     config.EnableRemoveGrass = (configMask & (1 << 8)) != 0;
+	config.DisableDiveMosaic = (configMask & (1 << 9)) != 0;
 
     return config;
 }
@@ -1154,6 +1157,7 @@ std::string UpdateConfigByMask(const char* originalConfig, int configMask) {
     ReplaceOptionValue(updatedConfig, "[Option_12]", config.HideGenshinUID ? "True" : "False");
     ReplaceOptionValue(updatedConfig, "[Option_13]", config.RedirectCombineEntryKey ? "True" : "False");
     ReplaceOptionValue(updatedConfig, "[Option_14]", config.EnableRemoveGrass ? "True" : "False");
+    ReplaceOptionValue(updatedConfig, "[Option_15]", config.DisableDiveMosaic ? "True" : "False");
     return updatedConfig;
 }
 
@@ -1237,6 +1241,11 @@ const char* configinitialize = R"([General]
 
             [Option_14]
             Name = EnableRemoveGrass
+            Type = Bool
+            Value = False
+
+            [Option_15]
+            Name = DisableDiveMosaic
             Type = Bool
             Value = False)";
 

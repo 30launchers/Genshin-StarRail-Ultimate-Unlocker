@@ -41,5 +41,9 @@ namespace UnlockFps.Gui.Utils
             GetPrivateProfileString(section, key, "", sb, sb.Capacity, iniFilePath);
             return sb.ToString();
         }
+
+        // 260726 写入ini文件
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        public static extern bool WritePrivateProfileString(string lpAppName, string lpKeyName, string lpString, string lpFileName);
     }
 }

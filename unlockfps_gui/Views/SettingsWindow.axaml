@@ -245,6 +245,21 @@
                         OnContent="仅原神处于焦点时启用重定向合成" 
                         ToolTip.Tip="避免在其他地方可能多次点击F12导致频繁打开合成台" />
 
+
+					<ToggleSwitch
+	                    IsEnabled="{Binding Config.LaunchOptions.EnableGensinAdvancedSet}"
+	                    IsChecked="{Binding Config.RemoveGenshinDiveBlur}"
+	                    OffContent="移除水下/月球漂浮模糊"
+	                    OnContent="移除水下/月球漂浮模糊"
+	                    ToolTip.Tip="N/A" />
+
+					<ToggleSwitch
+	                    IsEnabled="{Binding Config.LaunchOptions.EnableGensinAdvancedSet}"
+	                    IsChecked="{Binding Config.DisableAdvanceToolDLLError}"
+	                    OffContent="禁用高级设置DLL错误警告"
+	                    OnContent="禁用高级设置DLL错误警告"
+	                    ToolTip.Tip="N/A" />
+						
                     <ToggleSwitch
                         IsEnabled="False"
                         IsChecked="{Binding Config.DisableAdvanceSetForceFps}"

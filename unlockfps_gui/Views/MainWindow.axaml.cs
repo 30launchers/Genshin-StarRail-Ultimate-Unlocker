@@ -698,7 +698,8 @@ namespace UnlockFps.Gui.Views
                     {
                         message = message.Substring(0, maxLength) + "...";
                     }
-                    throw new Exception($"保存DLL文件失败: {message}");
+
+                    //throw new Exception($"保存DLL文件失败: {message}");
                 }
             }
 

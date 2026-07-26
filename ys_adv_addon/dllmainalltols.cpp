@@ -32,6 +32,7 @@ struct Config {
     bool enable_craft_redirection = false; // 默认启用合成台重定向
     bool enable_craft_redirection_key = false; // 默认启用快捷键合成
     bool hide_grass = false; // 默认启用草地 260225
+	bool hide_dive_mosaic = false; // 默认启用潜水马赛克 260726
 };
 
 static Config g_config;
@@ -124,6 +125,9 @@ static void ParseConfig(const std::string& config_str) {
                 else if (current_section == "option_14") { // EnableRemoveGrass
                     g_config.hide_grass = (toLower(value) == "true");
                 }
+				else if (current_section == "option_15") { // DisableDiveMosaic
+                    g_config.hide_dive_mosaic = (toLower(value) == "true");
+                }
                 else if (current_section == "option_6") { // EnableImmediateOpenTeam
                     g_config.enable_remove_team_anim = (toLower(value) == "true");
                 }
@@ -209,6 +213,9 @@ static SetActive_t g_set_active = nullptr;
 static SetupQuestBanner_t g_original_setup_quest_banner = nullptr;
 // 260225 去除草地
 static GetGrass_t g_grass_name = nullptr; // 新增
+
+// 260726
+uintptr_t g_PlayerDiveMosaicFunc = 0;
 
 
 // 260225 去除草地
@@ -702,6 +709,21 @@ __int64 HookGameUpdate(__int64 a1, const char* a2)
     return result;
 }
 
+// 260726
+void(__fastcall* g_original)(void*, float) = nullptr;
+
+void __fastcall hk_PlayerDiveMosaic(void* pThis, float value)
+{
+    if (g_config.hide_dive_mosaic)
+    {
+        return;
+    }
+
+    if (g_original)
+    {
+        g_original(pThis, value);
+    }
+}
 
 bool InstallGameUpdateHook()
 {
@@ -721,10 +743,46 @@ bool InstallGameUpdateHook()
     return true;
 }
 
+// 260726
+bool DisableDLLError = 0;
+int NaN = 0;
+
+std::wstring g_ConfigPath;
+
+static void InitConfig(HMODULE hModule)
+{
+    wchar_t dllPath[MAX_PATH]{};
+    GetModuleFileNameW(hModule, dllPath, MAX_PATH);
+
+    std::wstring path = dllPath;
+    size_t pos = path.find_last_of(L"\\/");
+    if (pos != std::wstring::npos) {
+        path = path.substr(0, pos + 1);
+    }
+
+    g_ConfigPath = path + L"configysr.ini";
+    if (GetFileAttributesW(g_ConfigPath.c_str()) == INVALID_FILE_ATTRIBUTES)
+    {
+        WritePrivateProfileStringW(L"Configs", L"DisableAdvanceToolDLLError", L"0", g_ConfigPath.c_str());
+        WritePrivateProfileStringW(L"Configs", L"Test", L"0", g_ConfigPath.c_str());
+    }
+}
+
+static void LoadDLLConfig()
+{
+    DisableDLLError = GetPrivateProfileIntW(L"Configs", L"DisableAdvanceToolDLLError", DisableDLLError ? 1 : 0, g_ConfigPath.c_str()) != 0;
+    NaN = GetPrivateProfileIntW(L"Configs", L"Test", NaN, g_ConfigPath.c_str());
+}
+
 
 // 初始化线程
 DWORD WINAPI InitializeThread(LPVOID lpParam)
 {
+    HMODULE hModule = (HMODULE)lpParam;
+
+    InitConfig(hModule);
+    LoadDLLConfig();
+
     while(!ConfigLoaded)
     {
         Sleep(1000);
@@ -949,6 +1007,12 @@ DWORD WINAPI InitializeThread(LPVOID lpParam)
         }
     }
 
+    // 260726 扫描PlayerDiveMosaic
+    g_PlayerDiveMosaicFunc = PatternScanner::ScanMain("41 57 41 56 56 57 53 48 81 EC ? ? ? ? 48 89 CE 80 3D ? ? ? ? ? 0F 85 ? ? ? ? 48 8B 86 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 8B 80 ? ? ? ? 48 83 F8");
+    if (!g_PlayerDiveMosaicFunc)
+    {
+        errors.push_back("scan PlayerDiveMosaic failed!");
+    }
 
     if (find_game_object_addr)
     {
@@ -1045,6 +1109,12 @@ DWORD WINAPI InitializeThread(LPVOID lpParam)
     }
 
 
+	// 安装PlayerDiveMosaic钩子 260726
+    if (!MinHookManager::Add((void*)g_PlayerDiveMosaicFunc,(void*)hk_PlayerDiveMosaic,(void**)&g_original))
+    {
+		errors.push_back("hook PlayerDiveMosaic failed!");
+    }
+
     // 安装GameUpdate Hook
     if (!InstallGameUpdateHook()) {
         //MessageBoxA(nullptr, "Failed to install gameupdate hook!", "Error", MB_ICONERROR);
@@ -1055,7 +1125,7 @@ DWORD WINAPI InitializeThread(LPVOID lpParam)
 
 
     // 检查是否有错误
-    if (!errors.empty())
+    if (!errors.empty() && DisableDLLError == 0)
     {
         // 构建错误消息
         std::string errorMsg = "DLL Errors：\n\n";
@@ -1096,7 +1166,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
         }
 
         // 创建初始化线程
-        CreateThread(nullptr, 0, InitializeThread, nullptr, 0, nullptr);
+        CreateThread(nullptr, 0, InitializeThread, hModule, 0, nullptr);
         break;
     }
     case DLL_PROCESS_DETACH:

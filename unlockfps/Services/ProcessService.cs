@@ -55,6 +55,44 @@ public class ProcessService
         //using var disposable = CreateProcessRaw(launchOptions, out var lpProcessInformation);
 
 
+        // 260726
+        int _lastDisableAdvanceToolDLLError = -1;
+
+        // 写入配置文件 260726
+        try
+        {
+            string dir = Path.Combine(AppContext.BaseDirectory, "ulk_ysr_tools");
+            Directory.CreateDirectory(dir);
+            string filePath = Path.Combine(dir, "configysr.ini");
+            if (!File.Exists(filePath))
+            {
+                File.WriteAllText(filePath, "[Configs]" + Environment.NewLine + "DisableAdvanceToolDLLError=0" + Environment.NewLine + "Test=0");
+            }
+        }
+        catch (Exception ex)
+        {
+            //
+        }
+
+        try
+        {
+            int enableRemoveDLLError = _config.DisableAdvanceToolDLLError ? 1 : 0;
+
+            if (_lastDisableAdvanceToolDLLError != enableRemoveDLLError)
+            {
+                string filePath = Path.Combine(AppContext.BaseDirectory, "ulk_ysr_tools", "configysr.ini");
+
+                NativeAndStruct.WritePrivateProfileString("Configs", "DisableAdvanceToolDLLError", enableRemoveDLLError.ToString(), filePath);
+
+                _lastDisableAdvanceToolDLLError = enableRemoveDLLError;
+            }
+        }
+        catch (Exception ex)
+        {
+            //
+        }
+
+
         if (_config.UseHDRGenshin)
         {
             var subKeyName = Path.GetFileName(_config.LaunchOptions.GamePath) == "YuanShen.exe" ? "原神" : "Genshin Impact";
@@ -1364,7 +1402,8 @@ public class ProcessService
                                              _config.RemoveTeamProgressGensin ||
                                              _config.RedirectCombineEntryGensin ||
                                              _config.HideGenshinUID ||            
-                                             _config.EnableGenshinRemoveGrass
+                                             _config.EnableGenshinRemoveGrass ||
+                                             _config.DisablePlayerPerspectiveBlur
                                              )
                                         {
                                             int configMask = 0;
@@ -1406,7 +1445,8 @@ public class ProcessService
                                             if (_config.EnableGenshinRemoveGrass)
                                                 configMask |= (1 << 8);
 
-
+                                            if (_config.RemoveGenshinDiveBlur)
+                                                configMask |= (1 << 9);
 
                                             if (!_config.LaunchOptions.EnableGensinAdvancedSet)
                                             {
@@ -1417,7 +1457,6 @@ public class ProcessService
                                             if (_lastConfigMask != configMask)
                                             {
                                                 //UpdateGameConfiguration(configMask);
-
 
                                                 //260117
                                                 ipcService.GenshinAdvanceToolMaskStatus(configMask);
@@ -1514,8 +1553,6 @@ public class ProcessService
                                     //        _lastConfigMask = 0;
                                     //    }
                                     //}
-
-
                                 }
                             }
                             catch (Exception ex)

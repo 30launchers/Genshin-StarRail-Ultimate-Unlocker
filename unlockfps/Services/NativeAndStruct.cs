@@ -12,6 +12,10 @@ namespace UnlockFps.Services
     //自定义结构体和导入本地方法250901
     internal class NativeAndStruct
     {
+        // 260726 写入ini文件
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        public static extern bool WritePrivateProfileString(string lpAppName, string lpKeyName, string lpString, string lpFileName);
+
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr CreateToolhelp32Snapshot(uint dwFlags, uint th32ProcessID);
 

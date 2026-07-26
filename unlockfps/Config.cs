@@ -108,4 +108,8 @@ public partial class Config : INotifyPropertyChanged
 
     // 260307
     public bool ForceUmlimitedFpsV2 { get; set; } = false;
+
+    // 260726
+    public bool RemoveGenshinDiveBlur { get; set; } = false;
+    public bool DisableAdvanceToolDLLError { get; set; } = false;
 }

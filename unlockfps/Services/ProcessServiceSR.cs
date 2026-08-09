@@ -532,6 +532,22 @@ namespace UnlockFps.Services
                     });
                 }
 
+                // 260809 处理hksr高级设置注入
+                string dllsradvanget = Path.Combine(appDirectory, "ulk_ysr_tools", "hksr_advan_tol.dll");
+                string[] sradvdllPath = new string[]
+                {
+                    dllsradvanget,
+                };
+
+                if (_config.EnableStarRailAdvancedSet == true)
+                {
+                    if (!ProcessUtils.InjectDlls(pi.hProcess, sradvdllPath))
+                    {
+                        throw new Win32Exception(Marshal.GetLastWin32Error(),
+                            $"Dll Injection failed. ({Marshal.GetLastPInvokeErrorMessage()})");
+                    }
+                    Console.WriteLine("hksr advDLL injected successfully.");
+                }
 
                 // --- 核心操作：DLL 注入 ---
                 // 使用 CreateProcess 返回的进程句柄 pi.hProcess

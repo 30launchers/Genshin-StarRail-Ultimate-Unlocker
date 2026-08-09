@@ -36,6 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Sr_adv_addon.dll" />
     <None Remove="Resources\Sr_Fov_Changer.dll" />
     <None Remove="Resources\Unlocker-YS.dll" />
     <None Remove="Resources\Unlocker-YSR.dll" />
@@ -49,6 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\Sr_adv_addon.dll" />
     <EmbeddedResource Include="Resources\Sr_Fov_Changer.dll" />
     <EmbeddedResource Include="Resources\Unlocker-YSR.dll" />
     <EmbeddedResource Include="Resources\wTE_ysr251210b.exe" />

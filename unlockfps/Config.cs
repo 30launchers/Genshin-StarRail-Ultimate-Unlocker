@@ -112,4 +112,44 @@ public partial class Config : INotifyPropertyChanged
     // 260726
     public bool RemoveGenshinDiveBlur { get; set; } = false;
     public bool DisableAdvanceToolDLLError { get; set; } = false;
+
+    // 260808
+    public bool EnableStarRailAdvancedSet { get; set; } = false;
+    public bool StarRailAdvancedMode { get; set; } = false;
+    public bool EnableADJSRUID { get; set; } = false;
+
+    //public float SRUIDColorR { get; set; } = 0.0f;
+    //public float SRUIDColorG { get; set; } = 1.0f;
+    //public float SRUIDColorB { get; set; } = 0.75f;
+    //public float SRUIDColorA { get; set; } = 1.0f;
+    private float _srUidColorR = 0.0f;
+    private float _srUidColorG = 1.0f;
+    private float _srUidColorB = 0.75f;
+    private float _srUidColorA = 1.0f;
+
+    public float SRUIDColorR
+    {
+        get => _srUidColorR;
+        set => _srUidColorR = MathF.Round(value, 2);
+    }
+
+    public float SRUIDColorG
+    {
+        get => _srUidColorG;
+        set => _srUidColorG = MathF.Round(value, 2);
+    }
+
+    public float SRUIDColorB
+    {
+        get => _srUidColorB;
+        set => _srUidColorB = MathF.Round(value, 2);
+    }
+
+    public float SRUIDColorA
+    {
+        get => _srUidColorA;
+        set => _srUidColorA = MathF.Round(value, 2);
+    }
+
+    public bool SRDisablePlayerPerspectiveBlur { get; set; } = false;
 }

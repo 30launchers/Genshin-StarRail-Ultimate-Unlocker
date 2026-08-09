@@ -233,6 +233,8 @@ namespace UnlockFps.Gui.Views
         private string _ysnvhelperDllPath = string.Empty;
         // 260117
         private string _ysadvaddon = string.Empty;
+        // 260809
+        private string _sradvaddon = string.Empty;
 
         //251102字段：用 PixelPoint 保存像素位置，用 Avalonia.Size 保存窗口大小
         private PixelPoint _windowLocation;
@@ -377,6 +379,8 @@ namespace UnlockFps.Gui.Views
             //_ysadvaddon = LoadGenshinToolsDLL("ys_adv_addon.dll", "adv_addon.dll");
             // 260117 修改为：
             _ysadvaddon = LoadGenshinToolsDLL("ys_adv_addon.dll", "genshin_advan_tol.dll");
+            //260809
+            _sradvaddon = LoadGenshinToolsDLL("Sr_adv_addon.dll", "hksr_advan_tol.dll");
 
             IpcService.getStubPath(_stubDllPath);
 

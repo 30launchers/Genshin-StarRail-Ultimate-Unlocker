@@ -9,9 +9,11 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -246,12 +248,16 @@ namespace UnlockFps.Gui.Views
                 });
             }
             //同上
-            if (_allowsetSRFOVstate == true)
+            // 260808
+            if (_configService != null && !_configService.Config.EnableStarRailAdvancedSet) 
             {
-                Dispatcher.UIThread.Invoke(() =>
+                if (_allowsetSRFOVstate == true)
                 {
-                    FOVStarRailSwitch.IsEnabled = true;
-                });
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        FOVStarRailSwitch.IsEnabled = true;
+                    });
+                }
             }
 
             // 在控件完全加载后允许处理相关变更事件 260215 已转移到control_onloaded中最后，确保在UI元素状态正确后才允许事件处理，避免在加载过程中因事件触发导致的状态不一致问题
@@ -305,6 +311,9 @@ namespace UnlockFps.Gui.Views
                     }
                 }
             }
+
+            // 260808停止sraddr更新
+            _updateCts?.Cancel();
         }
 
         private void Config_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -897,6 +906,93 @@ namespace UnlockFps.Gui.Views
             }
 
             return _gameversion;
+        }
+
+        private CancellationTokenSource? _updateCts;
+
+        private async void UpdateOffsetAddressHandler(object sender, RoutedEventArgs args)
+        {
+            Button? button = sender as Button;
+
+            _updateCts = new CancellationTokenSource();
+
+            try
+            {
+                CancellationToken token = _updateCts.Token;
+
+                if (button != null)
+                {
+                    button.IsEnabled = false;
+                    button.Content = "Updating...";
+                }
+
+                GitLatestSRaddrText.Text = "正在从 GitHub 获取最新偏移配置...";
+
+                //string url = "https://raw.githubusercontent.com/30launchers/Game-Mem-Offsets/refs/heads/main/Config/offsets.json";
+                string url = "https://raw.githubusercontent.com/30launchers/Game-Mem-Offsets/main/Config/offsets.json?t=" + DateTime.Now.Ticks;
+
+                string folderPath = Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "ulk_ysr_tools"
+                );
+
+                Directory.CreateDirectory(folderPath);
+
+                string filePath = Path.Combine(
+                    folderPath,
+                    "offsets.json"
+                );
+
+                using HttpClient client = new();
+
+                // 支持取消下载
+                string newJson = await client.GetStringAsync(url, token);
+
+                // 解析更新时间
+                using JsonDocument doc = JsonDocument.Parse(newJson);
+
+                string updateTime = "Unknown";
+
+                if (doc.RootElement.TryGetProperty("update_time", out var time))
+                {
+                    updateTime = time.GetString() ?? "Unknown";
+                }
+
+                token.ThrowIfCancellationRequested();
+
+                if (File.Exists(filePath))
+                {
+                    string oldJson = await File.ReadAllTextAsync(filePath, token);
+
+                    if (oldJson == newJson)
+                    {
+                        GitLatestSRaddrText.Text = $"偏移配置已是最新 ({updateTime})";
+                        return;
+                    }
+                }
+
+                await File.WriteAllTextAsync(filePath, newJson, token);
+                GitLatestSRaddrText.Text =$"偏移配置更新成功 ({updateTime})";
+            }
+            catch (OperationCanceledException)
+            {
+                // 窗口关闭或主动取消
+            }
+            catch (Exception ex)
+            {
+                GitLatestSRaddrText.Text = $"更新失败: {ex.Message}";
+            }
+            finally
+            {
+                _updateCts?.Dispose();
+                _updateCts = null;
+
+                if (button != null)
+                {
+                    button.IsEnabled = true;
+                    button.Content = "更新固定偏移地址";
+                }
+            }
         }
     }
 }

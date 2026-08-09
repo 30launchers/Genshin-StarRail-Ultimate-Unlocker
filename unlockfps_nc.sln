@@ -8,6 +8,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "unlockfps_gui", "unlockfps_gui\unlockfps_gui.csproj", "{2E8443BA-176B-4586-A393-7B6A0EB07E40}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0F921FE9-FE60-4FFA-8317-0C980BB465F7} = {0F921FE9-FE60-4FFA-8317-0C980BB465F7}
+		{44E90B44-59E1-4FF8-8EB3-039308191B1B} = {44E90B44-59E1-4FF8-8EB3-039308191B1B}
 		{8FBBA5AB-C52B-4880-94CD-74FAB00783BB} = {8FBBA5AB-C52B-4880-94CD-74FAB00783BB}
 		{BCBFA432-9548-4207-9E94-8CE4FF461E21} = {BCBFA432-9548-4207-9E94-8CE4FF461E21}
 	EndProjectSection
@@ -19,6 +20,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sr_Fov_Changer", "Sr_Fov_Changer\Sr_Fov_Changer.vcxproj", "{BCBFA432-9548-4207-9E94-8CE4FF461E21}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ys_adv_addon", "ys_adv_addon\ys_adv_addon.vcxproj", "{8FBBA5AB-C52B-4880-94CD-74FAB00783BB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sr_adv_addon", "Sr_adv_addon\Sr_adv_addon.vcxproj", "{44E90B44-59E1-4FF8-8EB3-039308191B1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -102,6 +105,18 @@ Global
 		{8FBBA5AB-C52B-4880-94CD-74FAB00783BB}.Release|x64.Build.0 = Release|x64
 		{8FBBA5AB-C52B-4880-94CD-74FAB00783BB}.Release|x86.ActiveCfg = Release|Win32
 		{8FBBA5AB-C52B-4880-94CD-74FAB00783BB}.Release|x86.Build.0 = Release|Win32
+		{44E90B44-59E1-4FF8-8EB3-039308191B1B}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{44E90B44-59E1-4FF8-8EB3-039308191B1B}.Debug|Any CPU.Build.0 = Debug|x64
+		{44E90B44-59E1-4FF8-8EB3-039308191B1B}.Debug|x64.ActiveCfg = Debug|x64
+		{44E90B44-59E1-4FF8-8EB3-039308191B1B}.Debug|x64.Build.0 = Debug|x64
+		{44E90B44-59E1-4FF8-8EB3-039308191B1B}.Debug|x86.ActiveCfg = Debug|Win32
+		{44E90B44-59E1-4FF8-8EB3-039308191B1B}.Debug|x86.Build.0 = Debug|Win32
+		{44E90B44-59E1-4FF8-8EB3-039308191B1B}.Release|Any CPU.ActiveCfg = Release|x64
+		{44E90B44-59E1-4FF8-8EB3-039308191B1B}.Release|Any CPU.Build.0 = Release|x64
+		{44E90B44-59E1-4FF8-8EB3-039308191B1B}.Release|x64.ActiveCfg = Release|x64
+		{44E90B44-59E1-4FF8-8EB3-039308191B1B}.Release|x64.Build.0 = Release|x64
+		{44E90B44-59E1-4FF8-8EB3-039308191B1B}.Release|x86.ActiveCfg = Release|Win32
+		{44E90B44-59E1-4FF8-8EB3-039308191B1B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

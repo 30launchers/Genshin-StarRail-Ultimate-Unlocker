@@ -864,15 +864,20 @@ DWORD WINAPI InitializeThread(LPVOID lpParam)
 
 
 	// …®√Ë damage text ShowOneDamageTextEx
-    std::string pattern_dam = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC D8 01 00 00 44 0F 29 AC 24 C0 01 00 00 44 0F 29 A4 24 B0 01 00 00";
+    // 260812
+    std::string pattern_dam = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC ? ? ? ? 44 0F 29 AC 24 ? ? ? ? 44 0F 29 A4 24 ? ? ? ? 44 0F 29 9C 24 ? ? ? ? 44 0F 29 94 24 ? ? ? ? 44 0F 29 8C 24 ? ? ? ? 44 0F 29 84 24 ? ? ? ? 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 44 89 CF";
     std::string pattern_dam2 = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC ? ? ? ? 44 0F 29 9C 24 ? ? ? ? 44 0F 29 94 24 ? ? ? ? 44 0F 29 8C 24 ? ? ? ? 44 0F 29 84 24 ? ? ? ? 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 44 89 CF 45 89 C4";
     std::string pattern_dam3 = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC ? ? ? ? 44 0F 29 9C 24 ? ? ? ? 44 0F 29 94 24 ? ? ? ? 44 0F 29 8C 24 ? ? ? ? 44 0F 29 84 24 ? ? ? ? 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 44 89 CF";
+    std::string pattern_dam4 = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC D8 01 00 00 44 0F 29 AC 24 C0 01 00 00 44 0F 29 A4 24 B0 01 00 00";
     uintptr_t targetAddrdam = PatternScanner::ScanMain(pattern_dam);
     if (!targetAddrdam) {
         targetAddrdam = PatternScanner::ScanMain(pattern_dam2);
     }
     if (!targetAddrdam) {
         targetAddrdam = PatternScanner::ScanMain(pattern_dam3);
+    }
+    if (!targetAddrdam) {
+        targetAddrdam = PatternScanner::ScanMain(pattern_dam4);
     }
     if (!targetAddrdam)
     {
@@ -961,12 +966,17 @@ DWORD WINAPI InitializeThread(LPVOID lpParam)
 
 
 	// …®√Ë¥Úø™∂”ŒÈ∫Ø ˝µÿ÷∑
-    uintptr_t openTeamAddr = PatternScanner::ScanMain("48 83 EC ? 80 3D ? ? ? ? 00 75 ? 48 8B 0D ? ? ? ? 80 B9 ? ? ? ? 00 0F 84 ? ? ? ? B9 ? ? ? ? E8 ? ? ? ? 84 C0 75");
-    if (!openTeamAddr)
-    {
-        //MessageBoxA(nullptr, "failed!", "openTeam", MB_OK | MB_ICONERROR);
-        //return 1;
+    uintptr_t openTeamAddr = 0;
+    // 260812
+    std::string pattern_openTeam1 = "48 83 EC ? 80 3D ? ? ? ? 00 75 ? 48 8B 0D ? ? ? ? 80 B9 C7 00 00 00 00 74 ? B9 0C 00 00 00";
+    std::string pattern_openTeam2 = "48 83 EC ? 80 3D ? ? ? ? 00 75 ? 48 8B 0D ? ? ? ? 80 B9 ? ? ? ? 00 0F 84 ? ? ? ? B9 ? ? ? ? E8 ? ? ? ? 84 C0 75";
+    // “¿¥Œ≥¢ ‘
+    openTeamAddr = PatternScanner::ScanMain(pattern_openTeam1);
+    if (!openTeamAddr) {
+        openTeamAddr = PatternScanner::ScanMain(pattern_openTeam2);
+    }
 
+    if (!openTeamAddr) {
         errors.push_back("scan openTeam failed!");
     }
     // =============================================================================================
@@ -982,12 +992,16 @@ DWORD WINAPI InitializeThread(LPVOID lpParam)
         errors.push_back("scan CraftEntryPartner failed!");
     }
 
-    g_pCraftEntryFunc = PatternScanner::ScanMain("41 56 56 57 53 48 83 EC 58 49 89 CE 80 3D ? ? ? ? 00 0F 84 ? ? ? ? 80 3D ? ? ? ? 00 48 8B 0D ? ? ? ? 0F 85");
+
+    // 260812
+    g_pCraftEntryFunc = PatternScanner::ScanMain("41 56 56 57 53 48 83 EC ? 49 89 CE 80 3D ? ? ? ? 00 0F 84 ? ? ? ? 80 3D ? ? ? ? 00 48 8B 0D ? ? ? ? 0F 85 ? ? ? ? 48 8B 81 A0 A5 00 00");
     if (!g_pCraftEntryFunc) 
     {
         //MessageBoxA(nullptr, "failed!", "CraftEntry", MB_OK | MB_ICONERROR);
         //return 1;
-
+        g_pCraftEntryFunc = PatternScanner::ScanMain("41 56 56 57 53 48 83 EC 58 49 89 CE 80 3D ? ? ? ? 00 0F 84 ? ? ? ? 80 3D ? ? ? ? 00 48 8B 0D ? ? ? ? 0F 85");
+    }
+    if (!g_pCraftEntryFunc) {
         errors.push_back("scan CraftEntry failed!");
     }
 

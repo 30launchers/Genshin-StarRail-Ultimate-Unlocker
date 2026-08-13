@@ -19,7 +19,7 @@ Modified by 30launcher
  ## Compiling
  1. Install Visual Studio 2022 with Desktop C++ workload in Visual Studio Installer.
  2. Install .NET 8 SDK.
- 3. Use `dotnet build ./unlockfps_gui` for regular compiling. Use `dotnet publish ./unlockfps_gui -c Release -r win-x64` for AOT publish.
+ 3. Use `dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:SelfContained=true /p:PublishTrimmed=true /p:EnableCompressionInSingleFile=true /p:PublishReadyToRun=false /p:IncludeNativeLibrariesForSelfExtract=true /p:InvariantGlobalization=true` for regular compiling. Use `dotnet publish ./unlockfps_gui -c Release -r win-x64` for AOT publish.
 
  ## Usage
  

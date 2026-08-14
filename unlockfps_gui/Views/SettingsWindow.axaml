@@ -80,7 +80,7 @@
                         IsEnabled="{Binding Config.ForceUmlimitedFps, Converter={x:Static BoolConverters.Not}}"
 	                    OffContent="V2尝试阻止Genshin 10612-4001错误 (需要重启游戏)"
 	                    OnContent="V2尝试阻止Genshin 10612-4001错误 (需要重启游戏)" 
-                        ToolTip.Tip="尝试阻止因设定帧数过高导致的10612-4001错误,游戏版本更新后可能会失效 (260701 v6.7)" />
+                        ToolTip.Tip="尝试阻止因设定帧数过高导致的10612-4001错误,游戏版本更新后可能会失效 (260815 v7.0)" />
 
                     <ToggleSwitch
 	                    IsChecked="{Binding Config.UseHDRGenshin}"

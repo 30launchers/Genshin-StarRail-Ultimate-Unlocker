@@ -940,8 +940,15 @@ int HookGet_FrameCount() {
             //    return 60;
             //}
 
-            // ∑¿÷π≥È÷° v6.7 260701
-            if (offset != 0x0fb8cb22)
+            //// ∑¿÷π≥È÷° v6.7 260701
+            //if (offset != 0x0fb8cb22)
+            //{
+            //    //DebugPrint("[DLL] detected addr now return 60");
+            //    return 60;
+            //}
+
+			// ∑¿÷π≥È÷° v7.0 260815
+            if (offset != 0x078ADB5E)
             {
                 //DebugPrint("[DLL] detected addr now return 60");
                 return 60;

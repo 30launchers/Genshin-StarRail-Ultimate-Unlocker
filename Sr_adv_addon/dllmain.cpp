@@ -679,10 +679,10 @@ void RunLogic() {
 }
 
 DWORD WINAPI MainThread(LPVOID) {
-    InitConfigPath();
-    AllocConsole();
-    FILE* f;
-    freopen_s(&f, "CONOUT$", "w", stdout);
+    //InitConfigPath();
+    //AllocConsole();
+    //FILE* f;
+    //freopen_s(&f, "CONOUT$", "w", stdout);
     LOG("hideSRuidpath DLL loaded");
     Sleep(1000);
 

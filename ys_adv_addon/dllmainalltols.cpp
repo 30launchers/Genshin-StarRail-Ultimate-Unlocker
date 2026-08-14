@@ -994,12 +994,16 @@ DWORD WINAPI InitializeThread(LPVOID lpParam)
 
 
     // 260812
-    g_pCraftEntryFunc = PatternScanner::ScanMain("41 56 56 57 53 48 83 EC ? 49 89 CE 80 3D ? ? ? ? 00 0F 84 ? ? ? ? 80 3D ? ? ? ? 00 48 8B 0D ? ? ? ? 0F 85 ? ? ? ? 48 8B 81 A0 A5 00 00");
+    g_pCraftEntryFunc = PatternScanner::ScanMain("41 56 56 57 53 48 83 EC 48 49 89 CE 80 3D ? ? ? ? 00 0F 84 ? ? ? ? 80 3D ? ? ? ? 00 48 8B 0D ? ? ? ? 0F 85 ? ? ? ? 48 8B 81 ? ? ? ? 48 85 C0 0F 84");
     if (!g_pCraftEntryFunc) 
     {
         //MessageBoxA(nullptr, "failed!", "CraftEntry", MB_OK | MB_ICONERROR);
         //return 1;
         g_pCraftEntryFunc = PatternScanner::ScanMain("41 56 56 57 53 48 83 EC 58 49 89 CE 80 3D ? ? ? ? 00 0F 84 ? ? ? ? 80 3D ? ? ? ? 00 48 8B 0D ? ? ? ? 0F 85");
+    }
+    if (!g_pCraftEntryFunc)
+    {
+        g_pCraftEntryFunc = PatternScanner::ScanMain("41 56 56 57 53 48 83 EC ? 49 89 CE 80 3D ? ? ? ? 00 0F 84 ? ? ? ? 80 3D ? ? ? ? 00 48 8B 0D ? ? ? ? 0F 85 ? ? ? ? 48 8B 81 A0 A5 00 00");
     }
     if (!g_pCraftEntryFunc) {
         errors.push_back("scan CraftEntry failed!");

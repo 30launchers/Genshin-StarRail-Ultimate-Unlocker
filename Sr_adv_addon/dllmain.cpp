@@ -522,23 +522,63 @@ void __fastcall HookSetFieldOfView(void* _this, float value) {
         }
     }
 
-    // ESC按下重新计时
-    if (GetAsyncKeyState(VK_ESCAPE) & 1)
+    //// ESC按下重新计时
+    //if (GetAsyncKeyState(VK_ESCAPE) & 1)
+    //{
+    //    g_escTime = std::chrono::steady_clock::now();
+    //}
+
+
+    //// ESC触发后500ms内执行
+    //if (std::chrono::steady_clock::now() - g_escTime < std::chrono::milliseconds(700))
+    //{
+    //    static int frameCount = 0;
+    //    frameCount++;
+    //    if (frameCount % 60 != 0) return;
+    //    for (const auto& path : g_uidPaths) {
+    //        HideUIDByPath(path.c_str());
+    //    }
+    //}
+
+
+    // ---------- FOV 23.0 触发 HideUID ----------
+    static float lastFov = -1.0f;
+    static int frameCount = 0;
+
+    // 调试输出
+    //OutputDebugStringA(("[DLL] FOV value: " + std::to_string(value) + "\n").c_str());
+
+    // 判断当前是否为 23.0
+    bool lastIs23 = std::abs(lastFov - 23.0f) < 0.001f;
+    bool currentIs23 = std::abs(value - 23.0f) < 0.001f;
+
+    // 只有「非23 -> 23」时触发
+    if (!lastIs23 && currentIs23)
     {
         g_escTime = std::chrono::steady_clock::now();
+        frameCount = 0;
     }
 
+    // 保存本次 FOV
+    lastFov = value;
 
-    // ESC触发后500ms内执行
-    if (std::chrono::steady_clock::now() - g_escTime < std::chrono::milliseconds(700))
+    // 23.0 触发后的 700ms 内
+    bool fovHideActive = std::chrono::steady_clock::now() - g_escTime < std::chrono::milliseconds(700);
+
+    if (fovHideActive)
     {
-        static int frameCount = 0;
         frameCount++;
-        if (frameCount % 60 != 0) return;
-        for (const auto& path : g_uidPaths) {
-            HideUIDByPath(path.c_str());
+
+        // 每 60 次执行一次
+        if (frameCount % 60 == 0)
+        {
+            for (const auto& path : g_uidPaths)
+            {
+                HideUIDByPath(path.c_str());
+            }
         }
     }
+
 
 
     float _oldvalue = value;

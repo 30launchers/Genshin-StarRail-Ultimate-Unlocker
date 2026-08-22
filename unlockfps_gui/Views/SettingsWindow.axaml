@@ -232,13 +232,38 @@
                         OffContent="重定向合成入口"
                         OnContent="重定向合成入口" 
                         ToolTip.Tip="N/A" />
-                    <ToggleSwitch
+					<!--ToggleSwitch
                         IsEnabled="{Binding Config.LaunchOptions.EnableGensinAdvancedSet}"
                         IsVisible="{Binding Config.RedirectCombineEntryGensin}"
                         IsChecked="{Binding Config.EnableGenshinQuickCraftingKey}"
                         OffContent="使用F12打开合成台"
                         OnContent="使用F12打开合成台" 
-                        ToolTip.Tip="按下F12按键可立即打开合成台" />
+                        ToolTip.Tip="按下F12按键可立即打开合成台" /-->
+					<StackPanel Orientation="Horizontal" Spacing="20" VerticalAlignment="Center" IsVisible="{Binding Config.RedirectCombineEntryGensin}">
+						<ToggleSwitch
+							IsEnabled="{Binding Config.LaunchOptions.EnableGensinAdvancedSet}"
+							IsVisible="{Binding Config.RedirectCombineEntryGensin}"
+							IsChecked="{Binding Config.EnableGenshinQuickCraftingKey}"
+							OffContent="使用快捷键打开合成台"
+							OnContent="使用快捷键打开合成台"
+							ToolTip.Tip="按下设定的按键可立即打开合成台" />
+
+						<ComboBox
+							Width="120"
+                            HorizontalContentAlignment="Stretch"
+							VerticalAlignment="Center"
+							IsEnabled="{Binding Config.EnableGenshinQuickCraftingKey}"
+							ItemsSource="{Binding AvailableKeys}"
+							SelectedItem="{Binding SelectedCraftingKey, Mode=TwoWay}"
+							ToolTip.Tip="选择打开合成台的快捷键">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding KeyName}" />
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+					</StackPanel>
+						
                     <ToggleSwitch
                         IsEnabled="{Binding Config.LaunchOptions.EnableGensinAdvancedSet}"
                         IsChecked="{Binding Config.EnableGenshinCraftingFocusOnly}"

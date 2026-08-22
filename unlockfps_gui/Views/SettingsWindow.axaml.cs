@@ -6,6 +6,7 @@ using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -37,6 +38,31 @@ namespace UnlockFps.Gui.ViewModels
         public required Config Config { get; init; }
 
         public string? SelectedDll { get; set; }
+
+        // 260822
+        /// <summary>
+        /// 全键盘可选列表（等价于 fufu 的 AvailableKeys）。
+        /// 来自 KeyListProvider 反射 Avalonia.Input.Key 枚举。
+        /// </summary>
+        public IReadOnlyList<KeyOption> AvailableKeys => KeyListProvider.AllKeys;
+
+        /// <summary>
+        /// 当前选中的合成台快捷键。双向绑定到 Config.GenshinQuickCraftingKeyCode。
+        /// 找不到匹配项时返回 null（ComboBox 显示空）。
+        /// </summary>
+        public KeyOption? SelectedCraftingKey
+        {
+            get => KeyListProvider.FindByKeyCode(Config.GenshinQuickCraftingKeyCode);
+            set
+            {
+                if (value != null && value.KeyCode != Config.GenshinQuickCraftingKeyCode)
+                {
+                    Config.GenshinQuickCraftingKeyCode = value.KeyCode;
+                    OnPropertyChanged(nameof(SelectedCraftingKey));
+                }
+            }
+        }
+        // 260822
 
         public ICommand AddDllCommand => _addDllCommand ??= ReactiveCommand.CreateFromTask(async () =>
         {

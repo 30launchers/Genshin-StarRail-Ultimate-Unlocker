@@ -15,7 +15,7 @@
 			<TextBlock TextAlignment="Center" TextWrapping="Wrap">
 				<Run Text="Genshin SR FPS Unlocker" FontSize="15"/>
 				<LineBreak />
-				<Run x:Name="Run_Version" Text="v3.4.3s" />
+				<Run x:Name="Run_Version" Text="v3.4.5s" />
 			</TextBlock>
 
 			<TextBlock
@@ -52,7 +52,7 @@
 
 			<TextBlock TextAlignment="Center" TextWrapping="Wrap">
 				<LineBreak />
-				<Run Text="Modified by 30launcher date:260815" />
+				<Run Text="Modified by 30launcher date:260822" />
 			</TextBlock>
 
             <StackPanel

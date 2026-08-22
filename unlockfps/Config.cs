@@ -93,6 +93,8 @@ public partial class Config : INotifyPropertyChanged
 
     // 260131
     public bool EnableGenshinQuickCraftingKey { get; set; } = false;
+    /// <summary>合成台快捷键（保存 Avalonia.Input.Key 的整数值，默认 F12）。</summary>
+    public int GenshinQuickCraftingKeyCode { get; set; } = 123;
     public bool HideGenshinUID { get; set; } = false;
 
     // 260214

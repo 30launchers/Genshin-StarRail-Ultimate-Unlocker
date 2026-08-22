@@ -33,6 +33,7 @@ struct Config {
     bool enable_craft_redirection_key = false; // 默认启用快捷键合成
     bool hide_grass = false; // 默认启用草地 260225
 	bool hide_dive_mosaic = false; // 默认启用潜水马赛克 260726
+    int craft_key_vk = VK_F12;  // 合成台快捷键（Win32 VK 码，从 fps_config.json 读取）
 };
 
 static Config g_config;
@@ -147,6 +148,101 @@ DWORD WINAPI ReadConfigThread(LPVOID lpParam)
         // 解析配置并应用到g_config
         ParseConfig(config_str);
 	}
+}
+
+// 260822 读取fps_config.json中的快捷键
+static void LoadCraftKeyFromJson(HMODULE hModule)
+{
+    char dllPath[MAX_PATH]{};
+
+    // 获取 DLL 完整路径
+    if (!GetModuleFileNameA(hModule, dllPath, MAX_PATH))
+        return;
+
+    std::string path(dllPath);
+
+    // 第一次：去掉 DLL 文件名，得到 DLL 所在目录
+    size_t pos = path.find_last_of("\\/");
+    if (pos == std::string::npos)
+        return;
+
+    path = path.substr(0, pos);
+
+    // 第二次：去掉 DLL 所在目录，得到上一级目录
+    pos = path.find_last_of("\\/");
+    if (pos == std::string::npos)
+        return;
+
+    path = path.substr(0, pos);
+
+    // 拼接上一级目录下的 fps_config.json
+    path += "\\fps_config.json";
+
+    // 读取整个文件
+    std::ifstream ifs(path, std::ios::binary);
+    if (!ifs.is_open())
+        return; // 文件不存在，保留默认值
+
+    std::string content(
+        (std::istreambuf_iterator<char>(ifs)),
+        std::istreambuf_iterator<char>()
+    );
+
+    // 定位 "GenshinQuickCraftingKeyCode"
+    const std::string key = "GenshinQuickCraftingKeyCode";
+
+    size_t kpos = content.find(key);
+    if (kpos == std::string::npos)
+        return;
+
+    // 找冒号
+    size_t colon = content.find(':', kpos + key.size());
+    if (colon == std::string::npos)
+        return;
+
+    // 跳过空白
+    size_t i = colon + 1;
+
+    while (i < content.size() &&
+        isspace(static_cast<unsigned char>(content[i])))
+    {
+        i++;
+    }
+
+    // 必须是数字
+    if (i >= content.size() ||
+        !isdigit(static_cast<unsigned char>(content[i])))
+    {
+        return;
+    }
+
+    // 解析数字
+    int vk = 0;
+
+    while (i < content.size() &&
+        isdigit(static_cast<unsigned char>(content[i])))
+    {
+        vk = vk * 10 + (content[i] - '0');
+        i++;
+    }
+
+    // 有效性检查
+    if (vk < 1 || vk > 254)
+        return;
+
+    // 保存快捷键
+    g_config.craft_key_vk = vk;
+}
+
+DWORD WINAPI ReadConfigThread2(LPVOID lpParam)
+{
+    HMODULE hModule = static_cast<HMODULE>(lpParam);
+
+    while (true)
+    {
+        LoadCraftKeyFromJson(hModule);
+        Sleep(915);
+    }
 }
 
 
@@ -667,7 +763,9 @@ __int64 HookGameUpdate(__int64 a1, const char* a2)
     // 合成台重定向按键检测
     if (g_config.enable_craft_redirection_key == true && g_config.enable_craft_redirection == true && GameInited == true)
     {
-        bool bCurrentF12State = (GetAsyncKeyState(VK_F12) & 0x8000) != 0;
+        //bool bCurrentF12State = (GetAsyncKeyState(VK_F12) & 0x8000) != 0;
+		// 260822 使用配置中的快捷键
+        bool bCurrentF12State = (GetAsyncKeyState(g_config.craft_key_vk) & 0x8000) != 0;
         // 检测按键按下（边缘触发）
         if (bCurrentF12State && !bF12Pressed)
         {
@@ -806,6 +904,9 @@ DWORD WINAPI InitializeThread(LPVOID lpParam)
 
 	// 启动配置读取线程
     CreateThread(nullptr, 0, ReadConfigThread, nullptr, 0, nullptr);
+
+	// 启动键盘检测线程（用于合成台快捷键）
+    CreateThread(nullptr, 0, ReadConfigThread2, hModule, 0, nullptr);
 
     // 错误收集容器 260201
     std::vector<std::string> errors;

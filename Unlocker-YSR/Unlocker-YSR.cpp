@@ -509,7 +509,7 @@ __int64 HookChangeFOV(__int64 a1, float ChangeFovValue)
                 currentFov = originalFov;
             }
 
-            if (originalFov > 31.0f)
+            if (originalFov > 32.0f)
             {
                 float newTargetFov = 0.0f;
 

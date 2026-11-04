@@ -965,11 +965,13 @@ DWORD WINAPI InitializeThread(LPVOID lpParam)
 
 
 	// …®√Ë damage text ShowOneDamageTextEx
+    // 261104
+    std::string pattern_dam = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC 28 02 00 00 44 0F 29 BC 24 ? ? ? ? 44 0F 29 B4 24 ? ? ? ? 44 0F 29 AC 24 ? ? ? ? 44 0F 29 A4 24 ? ? ? ? 44 0F 29 9C 24 ? ? ? ? 44 0F 29 94 24 ? ? ? ? 44 0F 29 8C 24 ? ? ? ? 44 0F 29 84 24 ? ? ? ? 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 45 89 CD 89 D5 48 89 CE F3 44 0F 10 9C 24 ? ? ? ?";
     // 260812
-    std::string pattern_dam = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC ? ? ? ? 44 0F 29 AC 24 ? ? ? ? 44 0F 29 A4 24 ? ? ? ? 44 0F 29 9C 24 ? ? ? ? 44 0F 29 94 24 ? ? ? ? 44 0F 29 8C 24 ? ? ? ? 44 0F 29 84 24 ? ? ? ? 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 44 89 CF";
-    std::string pattern_dam2 = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC ? ? ? ? 44 0F 29 9C 24 ? ? ? ? 44 0F 29 94 24 ? ? ? ? 44 0F 29 8C 24 ? ? ? ? 44 0F 29 84 24 ? ? ? ? 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 44 89 CF 45 89 C4";
-    std::string pattern_dam3 = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC ? ? ? ? 44 0F 29 9C 24 ? ? ? ? 44 0F 29 94 24 ? ? ? ? 44 0F 29 8C 24 ? ? ? ? 44 0F 29 84 24 ? ? ? ? 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 44 89 CF";
-    std::string pattern_dam4 = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC D8 01 00 00 44 0F 29 AC 24 C0 01 00 00 44 0F 29 A4 24 B0 01 00 00";
+    std::string pattern_dam2 = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC ? ? ? ? 44 0F 29 AC 24 ? ? ? ? 44 0F 29 A4 24 ? ? ? ? 44 0F 29 9C 24 ? ? ? ? 44 0F 29 94 24 ? ? ? ? 44 0F 29 8C 24 ? ? ? ? 44 0F 29 84 24 ? ? ? ? 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 44 89 CF";
+    std::string pattern_dam3 = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC ? ? ? ? 44 0F 29 9C 24 ? ? ? ? 44 0F 29 94 24 ? ? ? ? 44 0F 29 8C 24 ? ? ? ? 44 0F 29 84 24 ? ? ? ? 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 44 89 CF 45 89 C4";
+    std::string pattern_dam4 = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC ? ? ? ? 44 0F 29 9C 24 ? ? ? ? 44 0F 29 94 24 ? ? ? ? 44 0F 29 8C 24 ? ? ? ? 44 0F 29 84 24 ? ? ? ? 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 44 89 CF";
+    std::string pattern_dam5 = "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC D8 01 00 00 44 0F 29 AC 24 C0 01 00 00 44 0F 29 A4 24 B0 01 00 00";
     uintptr_t targetAddrdam = PatternScanner::ScanMain(pattern_dam);
     if (!targetAddrdam) {
         targetAddrdam = PatternScanner::ScanMain(pattern_dam2);
@@ -979,6 +981,9 @@ DWORD WINAPI InitializeThread(LPVOID lpParam)
     }
     if (!targetAddrdam) {
         targetAddrdam = PatternScanner::ScanMain(pattern_dam4);
+    }
+    if (!targetAddrdam) {
+        targetAddrdam = PatternScanner::ScanMain(pattern_dam5);
     }
     if (!targetAddrdam)
     {

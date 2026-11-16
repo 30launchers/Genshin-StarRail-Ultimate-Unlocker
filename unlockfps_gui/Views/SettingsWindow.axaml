@@ -497,6 +497,21 @@
                         </ToggleSwitch>
 
 						<ToggleSwitch
+	                        IsChecked="{Binding Config.ApplyGenshinLoadDll}"
+	                        OffContent="Apply in Genshin"
+	                        OnContent="Apply in Genshin">
+							<ToolTip.Tip>
+								<TextBlock>
+									<Run Text="Also Load DLL in Genshin Impact." />
+									<LineBreak />
+									<Run Text="It may not work all the times." />
+									<LineBreak />
+									<Run Text="Uncheck this if the game crashes." />
+								</TextBlock>
+							</ToolTip.Tip>
+						</ToggleSwitch>
+							
+						<ToggleSwitch
 	                        IsChecked="{Binding Config.ApplySRLoadDll}"
 	                        OffContent="Apply in StarRail"
 	                        OnContent="Apply in StarRail">

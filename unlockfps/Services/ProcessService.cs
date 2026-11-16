@@ -366,12 +366,16 @@ public class ProcessService
         //}
 
 
-
-        if (!ProcessUtils.InjectDlls(lpProcessInformation.hProcess, launchOptions.DllList))
+        // 261116添加是否注入原神自定义DLL的选项
+        if (_config.ApplyGenshinLoadDll == true)
         {
-            throw new Win32Exception(Marshal.GetLastWin32Error(),
-                $"Dll Injection failed. ({Marshal.GetLastPInvokeErrorMessage()})");
+            if (!ProcessUtils.InjectDlls(lpProcessInformation.hProcess, launchOptions.DllList))
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error(),
+                    $"Dll Injection failed. ({Marshal.GetLastPInvokeErrorMessage()})");
+            }
         }
+
 
         //if (launchOptions.SuspendLoad && !ifManualLaunch && !_config.EnableGenshinMbUIWt)
         //{

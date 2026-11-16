@@ -563,8 +563,8 @@ namespace UnlockFps.Services
 
                 // --- 核心操作：恢复线程 ---
                 // 只有在之前挂起了线程的情况下才需要恢复
-                if (_config.ApplySRLoadDll == true)
-                {
+                //if (_config.ApplySRLoadDll == true)
+                //{
                     if (launchOptions.SuspendLoad && !ifManualLaunch && !_config.EnableStarRailMbUIWt)
                     {
                         Console.WriteLine("Resuming the main thread...");
@@ -577,7 +577,7 @@ namespace UnlockFps.Services
                         }
                         Console.WriteLine("Main thread resumed.");
                     }
-                }
+                //}
 
                 ShouldSRExit = false;
 

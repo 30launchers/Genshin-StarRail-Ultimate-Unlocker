@@ -48,6 +48,7 @@ public partial class Config : INotifyPropertyChanged
     public bool UsePowerSaveSR { get; set; }
     public int FpsTargetSR { get; set; } = 240;
     public int FpsTargetTemp { get; set; } = 240;
+    public bool ApplyGenshinLoadDll { get; set; } = true;
     public bool ApplySRLoadDll { get; set; } = false;
     public int ProcessPrioritySR { get; set; } = 3;
 
